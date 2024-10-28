@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <style>
+        form {
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            background-color: white;
+            width: 400px;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px auto;
+        }
+
+        .student-fields {
+            display: none; /* Ẩn các trường sinh viên ban đầu */
+        }
+
+        /* CSS cho dropdown */
+        .degree-interest-dropdown {
+            position: relative; /* Để cho mũi tên được đặt tuyệt đối */
+        }
+
+        .degree-interest-dropdown select {
+            padding-right: 30px; /* Tạo khoảng trống cho mũi tên */
+            height: 40px; /* Điều chỉnh chiều cao để mũi tên căn giữa */
+            appearance: none; /* Ẩn mũi tên mặc định */
+            -webkit-appearance: none; /* Ẩn mũi tên mặc định trên Safari */
+            -moz-appearance: none; /* Ẩn mũi tên mặc định trên Firefox */
+            background: transparent; /* Làm nền trong suốt */
+            border: 1px solid #ccc; /* Đường viền cho dropdown */
+            border-radius: 4px; /* Bo góc cho dropdown */
+        }
+
+        .degree-interest-dropdown::after {
+            content: "\f107"; /* Mã Unicode cho mũi tên xuống từ Font Awesome */
+            font-family: "Font Awesome 5 Free"; /* Font Family của Font Awesome */
+            font-weight: 900; /* Để có thể hiển thị mũi tên */
+            position: absolute; /* Đặt tuyệt đối để căn chỉnh mũi tên */
+            right: 10px; /* Căn lề bên phải */
+            top: 50%; /* Căn giữa theo chiều dọc */
+            transform: translateY(-50%); /* Căn giữa chính xác */
+            pointer-events: none; /* Không ảnh hưởng đến các sự kiện chuột */
+        }
+
+        .error-message {
+            color: red; /* Màu chữ cho thông báo lỗi */
+            font-size: 0.9em; /* Kích thước chữ nhỏ hơn */
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h1 style="text-align:center;">Welcome</h1>
+        <h3 style="text-align:center;">Create An Account</h3>
+
+        {% for field in form %}
+            {% if field.name == "is_student" %}
+                <div class="mb-3">
+                    {{ field }} {{ field.label }} <!-- Hiển thị checkbox và nhãn -->
+                </div>
+            {% elif field.name == "gpa" %}
+                <div class="mb-3 student-fields">
+                    {{ field.label_tag }} {{ field }} <!-- Hiển thị trường GPA -->
+                    {% if field.errors %}
+                        <div class="error-message">{{ field.errors }}</div> <!-- Hiển thị thông báo lỗi cho GPA -->
+                    {% endif %}
+                </div>
+            {% elif field.name == "language_score" %}
+                <div class="mb-3 student-fields">
+                    {{ field.label_tag }} {{ field }} <!-- Hiển thị trường Language Score -->
+                    {% if field.errors %}
+                        <div class="error-message">{{ field.errors }}</div> <!-- Hiển thị thông báo lỗi cho Language Score -->
+                    {% endif %}
+                </div>
+            {% elif field.name == "language_certificate" %}
+                <div class="mb-3 student-fields">
+                    {{ field.label_tag }} {{ field }} <!-- Hiển thị trường Language Certificate -->
+                    {% if field.errors %}
+                        <div class="error-message">{{ field.errors }}</div> <!-- Hiển thị thông báo lỗi cho Language Certificate -->
+                    {% endif %}
+                </div>
+            {% elif field.name == "desired_study_country" %}
+                <div class="mb-3 student-fields">
+                    {{ field.label_tag }} {{ field }} <!-- Hiển thị trường Desired Study Country -->
+                    {% if field.errors %}
+                        <div class="error-message">{{ field.errors }}</div> <!-- Hiển thị thông báo lỗi cho Desired Study Country -->
+                    {% endif %}
+                </div>
+            {% elif field.name == "degree_interest" %}
+                <div class="mb-3 student-fields degree-interest-dropdown">
+                    {{ field.label_tag }}
+                    <select name="degree_interest" class="form-control" id="{{ field.id_for_label }}" required>
+                        <option value="">Select Degree</option>
+                        <option value="bachelor">Bachelor's Degree</option>
+                        <option value="master">Master's Degree</option>
+                        <option value="doctorate">Doctorate Degree</option>
+                    </select>
+                    {% if field.errors %}
+                        <div class="error-message">{{ field.errors }}</div> <!-- Hiển thị thông báo lỗi cho Degree Interest -->
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="mb-3">
+                    {{ field.label_tag }} {{ field }} <!-- Hiển thị các trường khác -->
+                    {% if field.errors %}
+                        <div class="error-message">{{ field.errors }}</div> <!-- Hiển thị thông báo lỗi cho các trường khác -->
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <button class="btn btn-primary" style="width:100%">Create Account</button>
+        <p style="text-align:center;">Already have an account? <a href="{% url 'signin' %}">Login</a></p>
+    </form>
+
+    <script>
+        function toggleStudentFields() {
+            const isStudentChecked = document.getElementById("id_is_student").checked; // Sử dụng id chính xác cho checkbox
+            const studentFields = document.querySelectorAll(".student-fields");
+            studentFields.forEach(field => field.style.display = isStudentChecked ? "block" : "none"); // Hiện/ẩn các trường sinh viên
+        }
+
+        document.getElementById("id_is_student").addEventListener("change", toggleStudentFields); // Đảm bảo sử dụng id đúng
+        document.addEventListener("DOMContentLoaded", toggleStudentFields); // Hiển thị lại sau khi refresh
+    </script>
+{% endblock content %}
