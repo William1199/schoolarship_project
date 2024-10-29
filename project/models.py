@@ -9,7 +9,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 class Users(AbstractUser):
     email = models.EmailField(unique=True)
     profile_pic = models.ImageField(upload_to="p_img", blank=True, null=True)
-    address = CountryField()
+    dateOfBirth = models.DateField(null=True, blank=True)
+    address = models.CharField(max_length=50, blank=True, null=True)
     phone = models.CharField(max_length=15, null=True)
     role = models.CharField(max_length=50, blank=True, null=True)
     bio = models.TextField(blank=True, null=True)

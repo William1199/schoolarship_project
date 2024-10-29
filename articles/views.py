@@ -1,4 +1,6 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from .forms import CreateArticleForm
 from .models import Articles
 
 # Create your views here.
@@ -12,3 +14,9 @@ def detail(request, slug):
     articles = Articles.objects.get(slug=slug)
     context = {"articles": articles}
     return render(request, "articles_template/detail.html", context)
+
+@login_required(login_url="signin")
+def create_article(request):
+    form = CreateArticleForm()
+    context = {"form": form}
+    return render(request, "articles_template/create.html", context)

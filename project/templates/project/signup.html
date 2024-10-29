@@ -12,39 +12,16 @@
         }
 
         .student-fields {
-            display: none; /* Ẩn các trường sinh viên ban đầu */
-        }
-
-        /* CSS cho dropdown */
-        .degree-interest-dropdown {
-            position: relative; /* Để cho mũi tên được đặt tuyệt đối */
-        }
-
-        .degree-interest-dropdown select {
-            padding-right: 30px; /* Tạo khoảng trống cho mũi tên */
-            height: 40px; /* Điều chỉnh chiều cao để mũi tên căn giữa */
-            appearance: none; /* Ẩn mũi tên mặc định */
-            -webkit-appearance: none; /* Ẩn mũi tên mặc định trên Safari */
-            -moz-appearance: none; /* Ẩn mũi tên mặc định trên Firefox */
-            background: transparent; /* Làm nền trong suốt */
-            border: 1px solid #ccc; /* Đường viền cho dropdown */
-            border-radius: 4px; /* Bo góc cho dropdown */
-        }
-
-        .degree-interest-dropdown::after {
-            content: "\f107"; /* Mã Unicode cho mũi tên xuống từ Font Awesome */
-            font-family: "Font Awesome 5 Free"; /* Font Family của Font Awesome */
-            font-weight: 900; /* Để có thể hiển thị mũi tên */
-            position: absolute; /* Đặt tuyệt đối để căn chỉnh mũi tên */
-            right: 10px; /* Căn lề bên phải */
-            top: 50%; /* Căn giữa theo chiều dọc */
-            transform: translateY(-50%); /* Căn giữa chính xác */
-            pointer-events: none; /* Không ảnh hưởng đến các sự kiện chuột */
+            display: none;
         }
 
         .error-message {
-            color: red; /* Màu chữ cho thông báo lỗi */
-            font-size: 0.9em; /* Kích thước chữ nhỏ hơn */
+            color: red;
+            font-size: 0.9em;
+        }
+
+        .country-select-flag {
+            display: none;
         }
     </style>
 
@@ -71,21 +48,25 @@
                 <div class="mb-3 student-fields">
                     {{ field.label_tag }} {{ field }} <!-- Hiển thị trường Language Score -->
                     {% if field.errors %}
-                        <div class="error-message">{{ field.errors }}</div> <!-- Hiển thị thông báo lỗi cho Language Score -->
+                        <div class="error-message">{{ field.errors }}</div>
+                        <!-- Hiển thị thông báo lỗi cho Language Score -->
                     {% endif %}
                 </div>
             {% elif field.name == "language_certificate" %}
                 <div class="mb-3 student-fields">
                     {{ field.label_tag }} {{ field }} <!-- Hiển thị trường Language Certificate -->
                     {% if field.errors %}
-                        <div class="error-message">{{ field.errors }}</div> <!-- Hiển thị thông báo lỗi cho Language Certificate -->
+                        <div class="error-message">{{ field.errors }}</div>
+                        <!-- Hiển thị thông báo lỗi cho Language Certificate -->
                     {% endif %}
                 </div>
             {% elif field.name == "desired_study_country" %}
                 <div class="mb-3 student-fields">
-                    {{ field.label_tag }} {{ field }} <!-- Hiển thị trường Desired Study Country -->
+                    {{ field.label_tag }} <!-- Hiển thị nhãn cho Desired Study Country -->
+                    {{ field }} <!-- Chỉ hiển thị dropdown cho chọn quốc gia -->
                     {% if field.errors %}
-                        <div class="error-message">{{ field.errors }}</div> <!-- Hiển thị thông báo lỗi cho Desired Study Country -->
+                        <div class="error-message">{{ field.errors }}</div>
+                        <!-- Hiển thị thông báo lỗi cho Desired Study Country -->
                     {% endif %}
                 </div>
             {% elif field.name == "degree_interest" %}
@@ -98,14 +79,16 @@
                         <option value="doctorate">Doctorate Degree</option>
                     </select>
                     {% if field.errors %}
-                        <div class="error-message">{{ field.errors }}</div> <!-- Hiển thị thông báo lỗi cho Degree Interest -->
+                        <div class="error-message">{{ field.errors }}</div>
+                        <!-- Hiển thị thông báo lỗi cho Degree Interest -->
                     {% endif %}
                 </div>
             {% else %}
                 <div class="mb-3">
                     {{ field.label_tag }} {{ field }} <!-- Hiển thị các trường khác -->
                     {% if field.errors %}
-                        <div class="error-message">{{ field.errors }}</div> <!-- Hiển thị thông báo lỗi cho các trường khác -->
+                        <div class="error-message">{{ field.errors }}</div>
+                        <!-- Hiển thị thông báo lỗi cho các trường khác -->
                     {% endif %}
                 </div>
             {% endif %}
@@ -117,12 +100,13 @@
 
     <script>
         function toggleStudentFields() {
-            const isStudentChecked = document.getElementById("id_is_student").checked; // Sử dụng id chính xác cho checkbox
+            const isStudentChecked = document.getElementById("id_is_student").checked;
             const studentFields = document.querySelectorAll(".student-fields");
-            studentFields.forEach(field => field.style.display = isStudentChecked ? "block" : "none"); // Hiện/ẩn các trường sinh viên
+            studentFields.forEach(field => field.style.display = isStudentChecked ? "block" : "none");
         }
 
-        document.getElementById("id_is_student").addEventListener("change", toggleStudentFields); // Đảm bảo sử dụng id đúng
-        document.addEventListener("DOMContentLoaded", toggleStudentFields); // Hiển thị lại sau khi refresh
+        document.getElementById("id_is_student").addEventListener("change", toggleStudentFields);
+        document.addEventListener("DOMContentLoaded", toggleStudentFields);
     </script>
 {% endblock content %}
+

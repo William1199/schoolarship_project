@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .form-container {
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px auto;
+        width: 800px;
+    }
+
+    .form-container h4 {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .form-container .form-left,
+    .form-container .form-right {
+        padding: 10px;
+    }
+</style>
+
+<div class="form-container">
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {% if update %}
+            <h4>Update Your Schoolarship</h4>
+        {% else %}
+            <h4>Create Your Schoolarship</h4>
+        {% endif %}
+
+        <div class="row">
+            <!-- Left Column for most fields -->
+            <div class="col-md-6 form-left">
+                {% for field in form %}
+                    {% if field.name != "information" %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <small class="text-danger">{{ field.errors }}</small>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <!-- Right Column for 'information' field -->
+            <div class="col-md-6 form-right">
+                <div class="mb-3">
+                    <label for="{{ form.information.id_for_label }}">{{ form.information.label }}</label>
+                    {{ form.information }}
+                    {% if form.information.errors %}
+                        <small class="text-danger">{{ form.information.errors }}</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" style="width:100%">
+            {% if update %}Update article{% else %}Create Article{% endif %}
+        </button>
+    </form>
+</div>
+
+{% endblock content %}

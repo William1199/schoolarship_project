@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import RegisterForm
+from .forms import RegisterForm, UpdateProfileForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -9,15 +9,14 @@ def signup(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST, request.FILES)
         if form.is_valid():
-            user = form.save(commit=False)  # Tạo user nhưng chưa lưu vào database
+            user = form.save(commit=False)
             if not form.cleaned_data.get('is_student'):
-                # Nếu không phải là sinh viên, đặt các trường bổ sung về None
                 user.gpa = None
                 user.language_score = None
                 user.language_certificate = None
                 user.desired_study_country = None
                 user.degree_interest = None
-            user.save()  # Lưu vào database
+            user.save()
             messages.success(request, "Account created successfully")
             return redirect("index")
 
@@ -42,32 +41,30 @@ def signin(request):
 
 def signout(request):
     logout(request)
+    messages.success(request, "You have been logged out successfully.")
     return redirect("index")
 
-
+@login_required(login_url="signin")
 def profile(request):
-    context = {}
+    user = request.user
+    articles = Articles.objects.filter(user=user)
+    context = {"user": user, "articles": articles}
     return render(request, "project/profile.html", context)
 
-# @login_required(login_url="signin")
-# def profile(request):
-#     user = request.user
-#     articles = Articles.objects.filter(user=user)
-#     context = {"user": user, "articles": articles}
-#     return render(request, "project/profile.html", context)
+@login_required(login_url="signin")
+def update_profile(request):
+    if request.user.is_authenticated:
+        user = request.user
+        is_student = user.is_student
+        form = UpdateProfileForm(instance=user, is_student=is_student)
+        if request.method == 'POST':
+            form = UpdateProfileForm(request.POST, request.FILES, instance=user, is_student=is_student)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Profile updated successfully")
+                return redirect("profile")
+
+    context = {"form": form}
+    return render(request, "project/update_profile.html", context)
 
 
-# @login_required(login_url="signin")
-# def update_profile(request):
-#     if request.user.is_authenticated:
-#         user = request.user
-#         form = UpdateProfileForm(instance=user)
-#         if request.method == 'POST':
-#             form = UpdateProfileForm(request.POST, request.FILES, instance=user)
-#             if form.is_valid():
-#                 form.save()
-#                 messages.success(request, "Profile updated successfully")
-#                 return redirect("profile")
-#
-#     context = {"form": form}
-#     return render(request, "core/update_profile.html", context)
