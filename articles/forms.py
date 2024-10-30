@@ -10,10 +10,6 @@ class CreateArticleForm(forms.ModelForm):
     title = forms.CharField(
         widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Enter title"})
     )
-    slug = forms.SlugField(
-        required=False,
-        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Enter slug (optional)"})
-    )
     thumbnail = forms.ImageField(label="Article's picture",
                                  widget=forms.FileInput(attrs={"class": "form-control", "placeholder": "Add image"})
                                  )
@@ -39,7 +35,7 @@ class CreateArticleForm(forms.ModelForm):
                                     )
     information = forms.CharField(label="Infotmation about schoolarship",
                                   widget=forms.Textarea(attrs={"class": "form-control",
-                                                               "placeholder": "Enter detailed information about schoolarship"})
+                                  "placeholder": "Enter detailed information about schoolarship"})
                                   )
     category = forms.ModelChoiceField(label="Type of Schoolarship",
         queryset=Category.objects.all(),
@@ -49,6 +45,6 @@ class CreateArticleForm(forms.ModelForm):
     class Meta:
         model = Articles
         fields = [
-        "title", "slug", "thumbnail", "admission_date", "entry_points", "diploma",
+        "title", "thumbnail", "admission_date", "entry_points", "diploma",
         "costs", "location", "course_length", "information", "category"
         ]

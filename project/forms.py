@@ -6,9 +6,9 @@ from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
 
 DEGREE_CHOICES = [
-    ('bachelor', "Bachelor's Degree"),
-    ('master', "Master's Degree"),
-    ('doctorate', "Doctorate Degree"),
+    ('Bachelor', "Bachelor's Degree"),
+    ('Master', "Master's Degree"),
+    ('Doctorate', "Doctorate Degree"),
 ]
 
 

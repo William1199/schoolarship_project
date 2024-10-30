@@ -13,10 +13,12 @@
                             <!-- Post title-->
                             <h1 class="fw-bolder mb-1">{{ articles.title }}</h1>
                             <!-- Post meta content-->
-                            <div class="text-muted fst-italic mb-2">Posted on {{ articles.createdDate }} by Start Bootstrap</div>
+                            <div class="text-muted fst-italic mb-2">Posted on {{ articles.createdDate }} by {{ articles.user }}</div>
                             <!-- Post categories-->
+                            <a class="badge bg-secondary text-decoration-none link-light" href="#!">Start date: {{ articles.admission_date }}</a>
                             <a class="badge bg-secondary text-decoration-none link-light" href="#!">{{ articles.category }}</a>
-                            <a class="badge bg-secondary text-decoration-none link-light" href="#!">Freebies</a>
+                            <a class="badge bg-secondary text-decoration-none link-light" href="#!">{{ articles.diploma }} degree</a>
+                            <a class="badge bg-secondary text-decoration-none link-light" href="#!">Location: {{ articles.location }}</a>
                         </header>
                         <!-- Preview image figure-->
                         <figure class="mb-4"><img class="img-fluid rounded" src="{{ articles.thumbnail.url }}" alt="..." /></figure>
