@@ -113,11 +113,10 @@ class UpdateProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         is_student = kwargs.pop('is_student', False)
         super(UpdateProfileForm, self).__init__(*args, **kwargs)
+        self.fields['email'].disabled = True
 
         if not is_student:
-            # Ẩn các trường sinh viên nếu is_student là False
-            self.fields['gpa'].widget.attrs['style'] = 'display: none;'
-            self.fields['language_score'].widget.attrs['style'] = 'display: none;'
-            self.fields['language_certificate'].widget.attrs['style'] = 'display: none;'
-            self.fields['desired_study_country'].widget.attrs['style'] = 'display: none;'
-            self.fields['degree_interest'].widget.attrs['style'] = 'display: none;'
+            student_fields = ['gpa', 'language_score', 'language_certificate', 'desired_study_country',
+                              'degree_interest']
+            for field in student_fields:
+                self.fields.pop(field, None)

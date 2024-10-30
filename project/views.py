@@ -66,5 +66,3 @@ def update_profile(request):
 
     context = {"form": form}
     return render(request, "project/update_profile.html", context)
-
-

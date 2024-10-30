@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.text import slugify
 from django.contrib import messages
 from django.db.models import Q
@@ -34,11 +34,13 @@ def create_article(request):
     context = {"form": form}
     return render(request, "articles_template/create.html", context)
 
+@login_required(login_url="signin")
 def update_article(request,slug):
     update = True
     article = Articles.object.get(slug=slug)
     form = CreateArticleForm(instance=article)
     if request.method == "POST":
+        form = CreateArticleForm(request.POST, request.FILES, instance=article)
         article = form.save(commit=False)
         article.slug = slugify(request.POST["title"])
         article.save()
@@ -46,3 +48,16 @@ def update_article(request,slug):
         return redirect("profile")
     context = {"update": update}
     return render(request, "articles_template/create.html", context)
+
+@login_required(login_url="signin")
+def delete_article(request, slug):
+    # article = Articles.objects.get(slug=slug)
+    article = get_object_or_404(Articles, slug=slug)
+    articles = Articles.objects.filter(user=request.user)
+    delete_article = True
+    if request.method == "POST":
+        article.delete()
+        messages.success(request, "Deleted successfully!")
+        return redirect("profile")
+    context = {"article": article,"del": delete_article, "articles": articles }
+    return render(request, "project/profile.html", context)
