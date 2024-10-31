@@ -15,6 +15,7 @@ class Articles(models.Model):
     title = models.CharField(max_length=500, unique=True)
     slug = models.SlugField(blank=True, null=True)
     thumbnail = models.ImageField(upload_to="img")
+    slot = models.IntegerField(blank=True, null=True)
     admission_date = models.DateField()  # ngày nhập học
     entry_points = models.CharField(max_length=50)
     diploma = models.CharField(max_length=50)
@@ -30,3 +31,11 @@ class Articles(models.Model):
 
     def __str__(self):
         return self.title
+
+class Comment(models.Model):
+    article = models.ForeignKey(Articles,on_delete=models.CASCADE, related_name="comments")
+    body = models.TextField()
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE, related_name="comments")
+
+    def __str__(self):
+        return self.body
