@@ -16,9 +16,8 @@
     <header class="py-5 bg-light border-bottom mb-4">
         <div class="container">
             <div class="text-center my-5">
-                <h1 class="fw-bolder">Welcome to DevDrive!</h1>
-                <p class="lead mb-0">Are you a techie or are you aspiring to become one?
-                    DevDrive is where you should be. </p>
+                <h1 class="fw-bolder" style="color: #6e543c">Welcome to SchoolarsNest!</h1>
+                <p class="lead mb-0">Your ultimate destination for unlocking the world’s most impactful scholarships. Discover, apply, and let your journey to success soar! </p>
             </div>
         </div>
     </header>
@@ -48,9 +47,9 @@
                                 <a href="{% url 'detail' article.slug %}"><img class="card-img-top" src="{{ article.thumbnail.url }}" alt="..."/></a>
                                 <div class="card-body">
                                     <div class="small text-muted">{{ article.createdDate }}</div>
-                                    <h2 class="card-title h4">{{ article.title }}</h2>
+                                    <h2 class="card-title h4" style="color: #b87333">{{ article.title }}</h2>
                                     <p class="card-text">{{ article.information|truncatechars:"100" }}</p>
-                                    <a class="btn btn-primary" href="{% url 'detail' article.slug %}">Read more →</a>
+                                    <a class="btn btn-primary" style="background-color: #d6ba73; border: white" href="{% url 'detail' article.slug %}">Read more →</a>
                                 </div>
                             </div>
                         </div>
@@ -67,7 +66,7 @@
 
 
                         {% if articles.has_previous %}
-                            <li class="page-item"><a class="page-link" href="?page={{ articles.previous_page_number }}"
+                            <li class="page-item"><a class="page-link" style="background-color: #d6ba73; border: white" href="?page={{ articles.previous_page_number }}"
                                                      tabindex="-1" aria-disabled="true">Previous</a></li>
 
                         {% endif %}
@@ -76,18 +75,18 @@
 
                             {% if page == articles.number %}
 
-                                <li class="page-item active" aria-current="page"><a class="page-link"
+                                <li class="page-item active" aria-current="page"><a class="page-link" style="background-color: #d6ba73; border: white"
                                                                                     href="?page={{ page }}">{{ page }}</a>
                                 </li>
 
                             {% else %}
-                                <li class="page-item"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+                                <li class="page-item"><a class="page-link" style="background-color: #d6ba73; border: white" href="?page={{ page }}">{{ page }}</a></li>
 
                             {% endif %}
 
                         {% endfor %}
 
-                        {% if blogs.has_next %}
+                        {% if articles.has_next %}
                             <li class="page-item"><a class="page-link" href="?page={{ articles.next_page_number }}"
                                                      tabindex="-1" aria-disabled="true">Next</a></li>
 
@@ -100,13 +99,13 @@
             <div class="col-lg-4">
                 <!-- Search widget-->
                 <div class="card mb-4">
-                    <div class="card-header">Search</div>
+                    <div class="card-header" style="color: #56494c">Search</div>
                     <div class="card-body">
                         <form action="">
                             <div class="input-group">
                                 <input class="form-control" name="search" type="text" placeholder="Enter search term..."
                                        aria-label="Enter search term..." aria-describedby="button-search"/>
-                                <button class="btn btn-primary" id="button-search">Go!</button>
+                                <button class="btn btn-primary" style="background-color: #d6ba73; border: white" id="button-search">Go!</button>
                             </div>
                             <br>
                             {% if msg %}

@@ -6,11 +6,10 @@ from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
 
 DEGREE_CHOICES = [
-    ('Bachelor', "Bachelor's Degree"),
-    ('Master', "Master's Degree"),
-    ('Doctorate', "Doctorate Degree"),
+    ('bachelor', "Bachelor's Degree"),
+    ('master', "Master's Degree"),
+    ('doctorate', "Doctorate Degree"),
 ]
-
 
 class RegisterForm(UserCreationForm):
     email = forms.CharField(
@@ -47,18 +46,32 @@ class RegisterForm(UserCreationForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        is_student = cleaned_data.get("is_student")
 
-        # Kiểm tra các trường bổ sung nếu người dùng là sinh viên
-        if is_student:
-            if not cleaned_data.get("gpa"):
-                self.add_error("gpa", "GPA is required for students.")
-            if not cleaned_data.get("language_score"):
-                self.add_error("language_score", "Language score is required for students.")
-            if not cleaned_data.get("language_certificate"):
-                self.add_error("language_certificate", "Language certificate is required for students.")
+        # Chỉ kiểm tra cleaned_data nếu nó đã được xác định
+        if cleaned_data:
+            is_student = cleaned_data.get("is_student", False)
+
+            # Kiểm tra các trường bổ sung nếu người dùng là sinh viên
+            if is_student:
+                if not cleaned_data.get("gpa"):
+                    self.add_error("gpa", "GPA is required for students.")
+                if not cleaned_data.get("language_score"):
+                    self.add_error("language_score", "Language score is required for students.")
+                if not cleaned_data.get("language_certificate"):
+                    self.add_error("language_certificate", "Language certificate is required for students.")
+                if not cleaned_data.get("desired_study_country"):
+                    self.add_error("desired_study_country", "Desired study country is required for students.")
 
         return cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        super(RegisterForm, self).__init__(*args, **kwargs)
+
+        if self.data:
+            is_student = self.data.get('is_student') == 'on'  # Checkbox sẽ gửi về 'on' nếu được chọn
+            self.fields['desired_study_country'].required = is_student
+        else:
+            self.fields['desired_study_country'].required = True  # Mặc định là True khi không có dữ liệu
 
 
 class UpdateProfileForm(forms.ModelForm):

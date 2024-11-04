@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 style = "text-align: center;color: #6e543c">Your Applications</h2>
+{% if applications %}
+    <ul>
+        {% for application in applications %}
+            <li>
+                Article: {{ application.article.title }} - Status: {{ application.status }}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>You have not applied for any articles yet.</p>
+{% endif %}
+{% endblock %}

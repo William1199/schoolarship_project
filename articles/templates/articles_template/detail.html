@@ -1,11 +1,16 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
     <style>
         .card-img-top {
             width: 100%;
             height: 100px;
             object-fit: cover;
+        }
+
+        p {
+            text-align: justify;
+            text-justify: inter-word; /* Nếu cần, có thể thêm thuộc tính này */
         }
     </style>
     <!-- Page content-->
@@ -17,7 +22,7 @@
                     <!-- Post header-->
                     <header class="mb-4">
                         <!-- Post title-->
-                        <h1 class="fw-bolder mb-1">{{ articles.title }}!</h1>
+                        <h1 class="fw-bolder mb-1" style="color: #6e543c">{{ articles.title }}!</h1>
                         <!-- Post meta content-->
                         <div class="text-muted fst-italic mb-2">Posted on {{ articles.createdDate }}
                             by {{ articles.user.username }}</div>
@@ -32,13 +37,37 @@
                            href="#!">Location: {{ articles.location.name }}</a>
                         <a class="badge bg-secondary text-decoration-none link-light"
                            href="#!">Slot: {{ articles.slot }}</a>
+                        {% if request.user.is_authenticated %}
+                            {% if apply_requests %}
+                                {% if apply_requests.status == 'approved' %}
+                                    <button class="btn btn-success" disabled>Approved</button>
+                                {% elif apply_requests.status == 'denied' %}
+                                    <button class="btn btn-danger" disabled>Denied</button>
+                                {% else %}
+                                    <button class="btn btn-warning" disabled>Pending</button>
+                                {% endif %}
+                            {% else %}
+                                {% if request.user.is_student %}
+                                    <form action="{% url 'apply-request' articles.slug %}" method="POST">
+                                        {% csrf_token %}
+                                        <button class="btn btn-primary" style="background-color: #d6ba73; border: white"
+                                                type="submit">Apply
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <p> </p>
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            <p><a href="{% url 'signin' %}">Log in</a> to apply</p>
+                        {% endif %}
                     </header>
                     <!-- Preview image figure-->
                     <figure class="mb-4"><img class="img-fluid rounded" src="{{ articles.thumbnail.url }}" alt="..."/>
                     </figure>
                     <!-- Post content-->
                     <section class="mb-5">
-                        <p class="fs-5 mb-4">{{ articles.information | linebreaks }}</p>
+                        <p class="fs-5 mb-4" style="text-align: justify">{{ articles.information | linebreaks }}</p>
                     </section>
                 </article>
                 <!-- Comments section-->
@@ -53,31 +82,38 @@
                                     {% csrf_token %}
                                     {{ form.body }}
                                     <br>
-                                    <button class="btn btn-primary" style="width:100%">Drop your comment</button>
+                                    <button class="btn btn-primary"
+                                            style="width:100%;background-color: #d6ba73; border: white">Drop your
+                                        comment
+                                    </button>
                                 </form>
                             {% else %}
                                 <h4>Login to drop a comment</h4>
                                 <br> <br>
                             {% endif %}
                             <!-- Comment with nested comments-->
-                            {% for comment in comments %}
-                                <div class="d-flex mb-4">
-                                    <!-- Parent comment-->
-                                    {% if comment.user.profile_pic %}
-                                        <div class="flex-shrink-0"><img style="width:50px" class="rounded-circle"
-                                                                        src="{{ comment.user.profile_pic.url }}"
-                                                                        alt="..."/></div>
-                                    {% else %}
-                                        <div class="flex-shrink-0"><img class="rounded-circle"
-                                                                        src="https://dummyimage.com/50x50/ced4da/6c757d.jpg"
-                                                                        alt="..."/></div>
-                                    {% endif %}
-                                    <div class="ms-3">
-                                        <div class="fw-bold">{{ comment.user.username }}</div>
-                                        {{ comment.body }}
+                            {% if comments %}
+                                {% for comment in comments %}
+                                    <div class="d-flex mb-4">
+                                        <!-- Parent comment-->
+                                        {% if comment.user.profile_pic %}
+                                            <div class="flex-shrink-0"><img style="width:50px" class="rounded-circle"
+                                                                            src="{{ comment.user.profile_pic.url }}"
+                                                                            alt="..."/></div>
+                                        {% else %}
+                                            <div class="flex-shrink-0"><img class="rounded-circle"
+                                                                            src="https://dummyimage.com/50x50/ced4da/6c757d.jpg"
+                                                                            alt="..."/></div>
+                                        {% endif %}
+                                        <div class="ms-3">
+                                            <div class="fw-bold">{{ comment.user.username }}</div>
+                                            {{ comment.body }}
+                                        </div>
                                     </div>
-                                </div>
-                            {% endfor %}
+                                {% endfor %}
+                            {% else %}
+                                <p>No comments yet. Be the first to comment!</p>
+                            {% endif %}
                         </div>
                     </div>
                 </section>
@@ -92,7 +128,9 @@
                             <div class="input-group">
                                 <input class="form-control" name="search" type="text" placeholder="Enter search term..."
                                        aria-label="Enter search term..." aria-describedby="button-search"/>
-                                <button class="btn btn-primary" id="button-search">Go!</button>
+                                <button class="btn btn-primary" style="background-color: #d6ba73; border: white"
+                                        id="button-search">Go!
+                                </button>
                             </div>
                             <br>
                             {% if msg %}
@@ -118,7 +156,7 @@
                                             <div class="small text-muted"
                                                  style="font-size: 12px;">{{ articles.createdDate }}</div>
                                             <h5 class="card-title h4"
-                                                style="font-size: 20px;">{{ articles.title|truncatechars:"25" }}</h5>
+                                                style="font-size: 20px;color: #6e543c">{{ articles.title|truncatechars:"25" }}</h5>
                                             <p class="card-text"
                                                style="overflow: hidden; text-overflow: ellipsis;">{{ articles.information|truncatechars:"90" }}</p>
                                         </div>

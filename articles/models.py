@@ -1,6 +1,8 @@
 from django.db import models
 from django_countries.fields import CountryField
 from django.conf import settings
+
+
 # Create your models here.
 
 class Category(models.Model):
@@ -11,7 +13,8 @@ class Category(models.Model):
 
 
 class Articles(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True, related_name="articles")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True,
+                             related_name="articles")
     title = models.CharField(max_length=500, unique=True)
     slug = models.SlugField(blank=True, null=True)
     thumbnail = models.ImageField(upload_to="img")
@@ -24,7 +27,8 @@ class Articles(models.Model):
     course_length = models.CharField(max_length=50)
     information = models.TextField()
     featured = models.BooleanField(default=False)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True, related_name="articles_template")
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True,
+                                 related_name="articles_template")
 
     createdDate = models.DateTimeField(auto_now_add=True)
     updatedDate = models.DateTimeField(auto_now=True)
@@ -32,10 +36,23 @@ class Articles(models.Model):
     def __str__(self):
         return self.title
 
+
 class Comment(models.Model):
-    article = models.ForeignKey(Articles,on_delete=models.CASCADE, related_name="comments")
+    article = models.ForeignKey(Articles, on_delete=models.CASCADE, related_name="comments")
     body = models.TextField()
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE, related_name="comments")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="comments")
 
     def __str__(self):
         return self.body
+
+
+class ApplyRequest(models.Model):
+    article = models.ForeignKey(Articles, on_delete=models.CASCADE, related_name="apply_requests")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    status = models.CharField(max_length=10,
+                              choices=[('pending', 'Pending'), ('approved', 'Approved'), ('denied', 'Denied')],
+                              default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} -> {self.article.title} ({self.status})"

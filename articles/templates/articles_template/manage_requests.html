@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4" style="color: #6e543c">Manage Apply Requests</h2>
+    {% if requests %}
+        <div class="list-group">
+            {% for req in requests %}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="mb-1"><strong>{{ req.user.username }}</strong> applied for <strong>{{ req.article.title }}</strong></p>
+                    </div>
+                    <form method="POST" action="{% url 'update-request-status' req.id %}">
+                        {% csrf_token %}
+                        <button name="status" value="approved" class="btn btn-success btn-sm me-2">Approve</button>
+                        <button name="status" value="denied" class="btn btn-danger btn-sm">Deny</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-warning text-center" role="alert">
+            No pending requests.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

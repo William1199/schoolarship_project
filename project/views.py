@@ -5,24 +5,30 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from articles.models import Articles
 def signup(request):
-    form = RegisterForm()
     if request.method == 'POST':
         form = RegisterForm(request.POST, request.FILES)
         if form.is_valid():
-            user = form.save(commit=False)
-            if not form.cleaned_data.get('is_student'):
+            user = form.save(commit=False)  # Tạo đối tượng người dùng nhưng chưa lưu vào DB
+            # Kiểm tra is_student
+            is_student = form.cleaned_data.get('is_student', False)
+            if not is_student:
+                # Nếu không phải là sinh viên, gán các trường bổ sung về null
                 user.gpa = None
                 user.language_score = None
                 user.language_certificate = None
                 user.desired_study_country = None
                 user.degree_interest = None
-            user.save()
+            user.save()  # Lưu đối tượng người dùng vào DB
             messages.success(request, "Account created successfully")
-            return redirect("index")
+            return redirect("signin")  # Chuyển hướng đến trang chính hoặc một trang khác
+        else:
+            # Nếu form không hợp lệ, hiển thị thông báo lỗi
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = RegisterForm()  # Nếu không phải là POST, khởi tạo form rỗng
 
     context = {"form": form}
     return render(request, 'project/signup.html', context)
-
 def signin(request):
     if request.method == 'POST':
         email = request.POST["email"]

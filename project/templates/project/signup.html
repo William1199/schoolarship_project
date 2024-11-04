@@ -72,12 +72,13 @@
             {% elif field.name == "degree_interest" %}
                 <div class="mb-3 student-fields degree-interest-dropdown">
                     {{ field.label_tag }}
-                    <select name="degree_interest" class="form-control" id="{{ field.id_for_label }}" required>
-                        <option value="">Select Degree</option>
-                        <option value="bachelor">Bachelor's Degree</option>
-                        <option value="master">Master's Degree</option>
-                        <option value="doctorate">Doctorate Degree</option>
-                    </select>
+{#                    <select name="degree_interest" class="form-control" id="{{ field.id_for_label }}" required>#}
+{#                        <option value="">Select Degree</option>#}
+{#                        <option value="bachelor">Bachelor's Degree</option>#}
+{#                        <option value="master">Master's Degree</option>#}
+{#                        <option value="doctorate">Doctorate Degree</option>#}
+{#                    </select>#}
+                    {{ field }}
                     {% if field.errors %}
                         <div class="error-message">{{ field.errors }}</div>
                         <!-- Hiển thị thông báo lỗi cho Degree Interest -->
@@ -93,20 +94,29 @@
                 </div>
             {% endif %}
         {% endfor %}
-
-        <button class="btn btn-primary" style="width:100%">Create Account</button>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        <button class="btn btn-primary" type="submit" style="width:100%;background-color: #d6ba73; border: white">Create Account</button>
         <p style="text-align:center;">Already have an account? <a href="{% url 'signin' %}">Login</a></p>
     </form>
 
     <script>
-        function toggleStudentFields() {
-            const isStudentChecked = document.getElementById("id_is_student").checked;
-            const studentFields = document.querySelectorAll(".student-fields");
-            studentFields.forEach(field => field.style.display = isStudentChecked ? "block" : "none");
-        }
+    function toggleStudentFields() {
+        const isStudentChecked = document.getElementById("id_is_student").checked;
+        const studentFields = document.querySelectorAll(".student-fields");
 
-        document.getElementById("id_is_student").addEventListener("change", toggleStudentFields);
-        document.addEventListener("DOMContentLoaded", toggleStudentFields);
-    </script>
+        studentFields.forEach(field => {
+            const inputField = field.querySelector('input, select'); // Tìm trường input hoặc select bên trong
+            field.style.display = isStudentChecked ? "block" : "none";
+            inputField.required = isStudentChecked; // Đặt thuộc tính required tùy thuộc vào trạng thái
+        });
+    }
+
+    document.getElementById("id_is_student").addEventListener("change", toggleStudentFields);
+    document.addEventListener("DOMContentLoaded", toggleStudentFields);
+</script>
+
 {% endblock content %}
-

@@ -54,7 +54,7 @@
                                     <h4>{{ user.first_name }} {{ user.last_name }}</h4>
                                     <p class="text-secondary mb-1">{{ user.role }}</p>
                                     <p class="text-muted font-size-sm">{{ user.address }}</p>
-                                    <button class="btn btn-primary">Follow</button>
+                                    <button class="btn btn-primary" style="background-color: #d6ba73; border: white" >Follow</button>
                                 </div>
                             </div>
                         </div>
@@ -163,7 +163,7 @@
 
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <a class="btn btn-info" target="__blank"
+                                    <a class="btn btn-info" target="__blank" style="color: white;background-color: #d6ba73; border: white"
                                        href=" {% url "update_profile" %} ">Edit</a>
                                 </div>
                             </div>
@@ -182,7 +182,7 @@
                                             <div class="small text-muted">{{ article.created }}</div>
                                             <h2 class="card-title h4">{{ article.title }}</h2>
                                             <p class="card-text">{{ article.body | safe | truncatechars:"100" }}</p>
-                                            <a class="btn btn-primary" href="{% url 'detail' slug=article.slug %}">Read
+                                            <a class="btn btn-primary" style="background-color: #d6ba73; border: white" href="{% url 'detail' slug=article.slug %}">Read
                                                 more →</a>
                                             <span style="float: right" class="actions">
                                             <a href="{% url 'update-article' article.slug %}"><i

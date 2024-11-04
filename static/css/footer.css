@@ -1,0 +1,19 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    flex: 1; /* Chiếm hết không gian còn lại */
+}
+
+footer {
+    background-color: #91785d; /* Màu nền của footer */
+    color: white; /* Màu chữ của footer */
+    padding: 20px 0; /* Khoảng cách trên và dưới */
+}

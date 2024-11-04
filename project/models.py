@@ -17,12 +17,14 @@ class Users(AbstractUser):
     is_student = models.BooleanField(default=False)
 
     # Fields for students only
-    gpa = models.DecimalField(max_digits=3, decimal_places=2, validators=[MinValueValidator(0.0), MaxValueValidator(4.0)], help_text="GPA scale 0.0 - 4.0", null=True)
+    gpa = models.DecimalField(max_digits=3, decimal_places=2,
+                              validators=[MinValueValidator(0.0), MaxValueValidator(4.0)],
+                              help_text="GPA scale 0.0 - 4.0", blank=True, null=True)
     language_score = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     language_certificate = models.ImageField(upload_to="language_certificate", null=True)
 
-    desired_study_country = CountryField(null=True)
-    degree_interest = models.CharField(max_length=50, null=True)
+    desired_study_country = CountryField(blank=True, null=True)
+    degree_interest = models.CharField(max_length=50, blank=True, null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ('username',)
