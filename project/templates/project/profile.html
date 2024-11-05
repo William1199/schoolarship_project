@@ -51,10 +51,9 @@
                                          class="rounded-circle" width="150">
                                 {% endif %}
                                 <div class="mt-3">
-                                    <h4>{{ user.first_name }} {{ user.last_name }}</h4>
-                                    <p class="text-secondary mb-1">{{ user.role }}</p>
-                                    <p class="text-muted font-size-sm">{{ user.address }}</p>
-                                    <button class="btn btn-primary" style="background-color: #d6ba73; border: white" >Follow</button>
+                                    <h1 style="color: #6e543c">{{ user.first_name }} {{ user.last_name }}</h1>
+                                    <h4>{{ user.role }}</h4>
+                                    <p class="text-muted font-size-sm" style="font-size: 20px">{{ user.address }}</p>
                                 </div>
                             </div>
                         </div>
@@ -64,30 +63,13 @@
                 <div class="col-md-8">
                     <div class="card mb-3">
                         <div class="card-body">
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <h6 class="mb-0">Bio</h6>
-                                </div>
-                                <div class="col-sm-9 text-secondary">
-                                    {{ user.bio }}
-                                </div>
-                            </div>
-                            <hr>
+
                             <div class="row">
                                 <div class="col-sm-3">
                                     <h6 class="mb-0">Email</h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
                                     {{ user.email }}
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <h6 class="mb-0">Phone</h6>
-                                </div>
-                                <div class="col-sm-9 text-secondary">
-                                    {{ user.phone }}
                                 </div>
                             </div>
                             <hr>
@@ -102,10 +84,28 @@
                             <hr>
                             <div class="row">
                                 <div class="col-sm-3">
+                                    <h6 class="mb-0">Phone</h6>
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                    {{ user.phone }}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
                                     <h6 class="mb-0">Address</h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
                                     {{ user.address }}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <h6 class="mb-0">Bio</h6>
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                    {{ user.bio }}
                                 </div>
                             </div>
                             {% if user.is_student %}
@@ -170,18 +170,23 @@
                         </div>
                     </div>
 
-                    <div class="container blog-container" style="border: 1px solid silver">
-                        <h5>My Articles</h5>
+                    <div class="container blog-container" >
+                        {% if user.is_student %}
+
+                        {% else %}
+                            <h3>My Articles</h3>
+                        {% endif %}
+                    <br>
                         <div class="row">
                             {% for article in articles %}
                                 <div class="col-md-6">
                                     <div class="card mb-4">
-                                        <a href="#!"><img class="card-img-top" src="{{ article.thumbnail.url }}"
+                                        <a href="{% url 'detail' article.slug %}"><img class="card-img-top" style="max-height: 230px; width: 100%; object-fit: cover;" src="{{ article.thumbnail.url }}"
                                                           alt="..."/></a>
                                         <div class="card-body">
                                             <div class="small text-muted">{{ article.created }}</div>
                                             <h2 class="card-title h4">{{ article.title }}</h2>
-                                            <p class="card-text">{{ article.body | safe | truncatechars:"100" }}</p>
+                                            <p class="card-text">{{ article.information | safe | truncatechars:"100" }}</p>
                                             <a class="btn btn-primary" style="background-color: #d6ba73; border: white" href="{% url 'detail' slug=article.slug %}">Read
                                                 more →</a>
                                             <span style="float: right" class="actions">

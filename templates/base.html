@@ -16,6 +16,7 @@
     <!-- Core theme CSS-->
     <link href="{% static 'css/style.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/footer.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/autoScroll.css' %}" rel="stylesheet"/>
     <!-- Font awesome-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css"
@@ -124,7 +125,9 @@
     {% block content %}
     {% endblock %}
 </div>
-
+<button id="scrollToTop" class="scroll-to-top">
+    <i class="fas fa-arrow-up"></i>
+</button>
 
 <!-- Footer-->
 <footer>
@@ -167,6 +170,21 @@
 </footer>
 <!-- Bootstrap core JS-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Lắng nghe sự kiện cuộn
+    window.onscroll = function() {
+        const button = document.getElementById("scrollToTop");
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            button.style.display = "block";
+        } else {
+            button.style.display = "none";
+        }
+    };
 
+    // Lắng nghe sự kiện click
+    document.getElementById("scrollToTop").onclick = function() {
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    };
+</script>
 </body>
 </html>

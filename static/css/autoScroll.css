@@ -1,0 +1,20 @@
+.scroll-to-top {
+    position: fixed;
+    bottom: 30px; /* Khoảng cách từ dưới */
+    right: 30px; /* Khoảng cách từ bên phải */
+    background-color: #ffdb58;/* Màu nền */
+    color: white; /* Màu chữ */
+    border: none;
+    border-radius: 5px; /* Bo góc */
+    width: 50px; /* Chiều rộng */
+    height: 50px; /* Chiều cao */
+    display: none; /* Ẩn nút khi bắt đầu */
+    align-items: center; /* Canh giữa */
+    justify-content: center; /* Canh giữa */
+    cursor: pointer; /* Con trỏ chuột dạng tay */
+    transition: background-color 0.3s; /* Hiệu ứng chuyển màu */
+}
+
+.scroll-to-top:hover {
+    background-color: #d6ba73; /* Màu khi hover */
+}

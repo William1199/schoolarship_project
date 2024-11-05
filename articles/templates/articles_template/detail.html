@@ -12,6 +12,8 @@
             text-align: justify;
             text-justify: inter-word; /* Nếu cần, có thể thêm thuộc tính này */
         }
+
+
     </style>
     <!-- Page content-->
     <div class="container mt-5">
@@ -26,40 +28,59 @@
                         <!-- Post meta content-->
                         <div class="text-muted fst-italic mb-2">Posted on {{ articles.createdDate }}
                             by {{ articles.user.username }}</div>
+                        <!-- Apply button-->
+                        <div style="float: right;">
+                            {% if request.user.is_authenticated %}
+                                {% if apply_requests %}
+                                    {% if apply_requests.status == 'approved' %}
+                                        <button class="btn btn-success" disabled>Approved</button>
+                                    {% elif apply_requests.status == 'denied' %}
+                                        <button class="btn btn-danger" disabled>Denied</button>
+                                    {% else %}
+                                        <button class="btn btn-warning" disabled>Pending</button>
+                                    {% endif %}
+                                {% else %}
+                                    {% if request.user.is_student %}
+                                        {% if articles.admission_date < today %}
+                                            <button class="btn btn-secondary" disabled>Expired</button>
+                                        {% else %}
+                                            <form action="{% url 'apply-request' articles.slug %}" method="POST">
+                                                {% csrf_token %}
+                                                <button class="btn btn-primary"
+                                                        style="background-color: #d6ba73; border: white; padding: 3.75px 10px; font-size: 18px"
+                                                        type="submit">
+                                                    Apply Now!
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            {% else %}
+                                <p><a href="{% url 'signin' %}">Log in</a> to apply</p>
+                            {% endif %}
+                        </div>
+
                         <!-- Post categories-->
-                        <a class="badge bg-secondary text-decoration-none link-light" href="#!">Start
-                            date: {{ articles.admission_date }}</a>
+                        {% if articles.admission_date < today %}
+                            <a class="badge bg-danger text-decoration-none link-light" href="#!">
+                                Admission date: {{ articles.admission_date }}
+                            </a>
+                        {% else %}
+                            <a class="badge bg-secondary text-decoration-none link-light" href="#!">
+                                Admission date: {{ articles.admission_date }}
+                            </a>
+                        {% endif %}
                         <a class="badge bg-secondary text-decoration-none link-light"
                            href="#!">{{ articles.category }}</a>
                         <a class="badge bg-secondary text-decoration-none link-light" href="#!">{{ articles.diploma }}
                             degree</a>
                         <a class="badge bg-secondary text-decoration-none link-light"
                            href="#!">Location: {{ articles.location.name }}</a>
-                        <a class="badge bg-secondary text-decoration-none link-light"
-                           href="#!">Slot: {{ articles.slot }}</a>
-                        {% if request.user.is_authenticated %}
-                            {% if apply_requests %}
-                                {% if apply_requests.status == 'approved' %}
-                                    <button class="btn btn-success" disabled>Approved</button>
-                                {% elif apply_requests.status == 'denied' %}
-                                    <button class="btn btn-danger" disabled>Denied</button>
-                                {% else %}
-                                    <button class="btn btn-warning" disabled>Pending</button>
-                                {% endif %}
-                            {% else %}
-                                {% if request.user.is_student %}
-                                    <form action="{% url 'apply-request' articles.slug %}" method="POST">
-                                        {% csrf_token %}
-                                        <button class="btn btn-primary" style="background-color: #d6ba73; border: white"
-                                                type="submit">Apply
-                                        </button>
-                                    </form>
-                                {% else %}
-                                    <p> </p>
-                                {% endif %}
-                            {% endif %}
+                        {% if articles.slot > 0 %}
+                            <a class="badge bg-secondary text-decoration-none link-light"
+                               href="#!">Slot: {{ articles.slot }}</a>
                         {% else %}
-                            <p><a href="{% url 'signin' %}">Log in</a> to apply</p>
+                            <span class="badge bg-danger text-decoration-none link-light">Slot: Full</span>
                         {% endif %}
                     </header>
                     <!-- Preview image figure-->
@@ -166,12 +187,8 @@
                         </div>
                     </div>
                 </div>
-
-
                 <!-- Side widget-->
-
             </div>
         </div>
     </div>
-
 {% endblock content %}

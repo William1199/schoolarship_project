@@ -6,7 +6,7 @@ from django.db.models import Q
 from .forms import CreateArticleForm, CommentForm
 from .models import Articles, Comment, Category, ApplyRequest
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-
+from django.utils import timezone
 
 # Create your views here.
 def index(request):
@@ -16,15 +16,15 @@ def index(request):
 
     if keyword:
         articles = Articles.objects.filter(
-            Q(title__icontains=keyword) | Q(information__icontains=keyword) | Q(category__title__icontains=keyword))
+            Q(title__icontains=keyword) | Q(information__icontains=keyword) | Q(category__title__icontains=keyword)).order_by('-createdDate')
         if articles.exists():
-            paginator = Paginator(articles, 4)
+            paginator = Paginator(articles, 6)
             articles = paginator.page(1)
         else:
             msg = f'There is no article with the keyword "{keyword}"'
     else:
-        articles = Articles.objects.filter(featured=False)
-        paginator = Paginator(articles, 4)
+        articles = Articles.objects.filter(featured=False).order_by('-createdDate')
+        paginator = Paginator(articles, 6)
         page = request.GET.get("page")
 
         try:
@@ -43,6 +43,7 @@ def index(request):
 
 def detail(request, slug):
     keyword = request.GET.get("search")
+    today = timezone.now().date()
     msg = None
 
     if keyword:
@@ -73,7 +74,7 @@ def detail(request, slug):
                 messages.success(request, "Your comment has been posted.")
                 return redirect("detail", slug=article.slug)
 
-    context = {"articles": article, "form": form, "comments": comments, "r_articles": related_articles, "msg": msg, "apply_status": apply_status}
+    context = {"articles": article, "form": form, "comments": comments, "r_articles": related_articles, "msg": msg, "apply_status": apply_status, "today": today,}
     return render(request, "articles_template/detail.html", context)
 
 @login_required(login_url="signin")
@@ -98,16 +99,17 @@ def create_article(request):
 @login_required(login_url="signin")
 def update_article(request, slug):
     update = True
-    article = Articles.object.get(slug=slug)
+    article = Articles.objects.get(slug=slug)
     form = CreateArticleForm(instance=article)
     if request.method == "POST":
         form = CreateArticleForm(request.POST, request.FILES, instance=article)
-        article = form.save(commit=False)
-        article.slug = slugify(request.POST["title"])
-        article.save()
-        messages.success(request, "Articles updated successfully!")
-        return redirect("profile")
-    context = {"update": update}
+        if form.is_valid():
+            article = form.save(commit=False)
+            article.slug = slugify(request.POST["title"])
+            article.save()
+            messages.success(request, "Article updated successfully!")
+            return redirect("profile")
+    context = {"form": form, "update": update}
     return render(request, "articles_template/create.html", context)
 
 @login_required(login_url="signin")
@@ -129,9 +131,19 @@ def apply_request(request, slug):
     article = get_object_or_404(Articles, slug=slug)
 
     if request.method == "POST" and request.user.is_authenticated:
-        ApplyRequest.objects.get_or_create(user=request.user, article=article, status="pending")
-        messages.success(request, "Your apply request has been sent.")
+        # Kiểm tra xem yêu cầu đã tồn tại chưa
+        apply_request, created = ApplyRequest.objects.get_or_create(user=request.user, article=article)
+
+        if created:
+            # Yêu cầu mới được tạo
+            apply_request.status = "pending"  # Đặt trạng thái là 'pending'
+            apply_request.save()
+            messages.success(request, "Your apply request has been sent.")
+        else:
+            messages.warning(request, "You have already applied for this article.")  # Thông báo nếu đã tồn tại
+
     return redirect("detail", slug=slug)
+
 
 @login_required(login_url="signin")
 def manage_requests(request):
@@ -143,19 +155,48 @@ def manage_requests(request):
 def update_request_status(request, request_id):
     req = get_object_or_404(ApplyRequest, id=request_id, article__user=request.user)
     if request.method == "POST":
-        req.status = request.POST.get("status")
+        new_status = request.POST.get("status")
+        req.status = new_status
         req.save()
+
+        # Giảm số slot của bài viết nếu yêu cầu được phê duyệt
+        if new_status == 'approved':
+            article = req.article
+            if article.slot > 0:
+                article.slot -= 1  # Giảm số slot xuống 1
+                article.save()  # Lưu thay đổi
+
     return redirect("manage-requests")
+
+# @login_required(login_url="signin")
+# def student_applications(request):
+#     if not request.user.is_authenticated or not request.user.is_student:
+#         return redirect('signin')  # Redirect to login if not authenticated or not a student
+#
+#     # Lấy tất cả các yêu cầu đã apply của user
+#     requests = ApplyRequest.objects.filter(user=request.user)
+#
+#     context = {
+#         "applications": requests,
+#     }
+#     return render(request, "articles_template/student_applications.html", context)
 
 @login_required(login_url="signin")
 def student_applications(request):
     if not request.user.is_authenticated or not request.user.is_student:
-        return redirect('signin')  # Redirect to login if not authenticated or not a student
+        return redirect('signin')
+    # Lấy tham số trạng thái từ GET request (nếu có)
+    status_filter = request.GET.get('status')
 
     # Lấy tất cả các yêu cầu đã apply của user
-    requests = ApplyRequest.objects.filter(user=request.user)
+    applications = ApplyRequest.objects.filter(user=request.user)
+
+    # Nếu có trạng thái được lọc, áp dụng bộ lọc
+    if status_filter:
+        applications = applications.filter(status=status_filter)
 
     context = {
-        "requests": requests,
+        "applications": applications,
+        "status_filter": status_filter,  # Để sử dụng trong template
     }
     return render(request, "articles_template/student_applications.html", context)

@@ -1,16 +1,57 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2 style = "text-align: center;color: #6e543c">Your Applications</h2>
-{% if applications %}
-    <ul>
-        {% for application in applications %}
-            <li>
-                Article: {{ application.article.title }} - Status: {{ application.status }}
-            </li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>You have not applied for any articles yet.</p>
-{% endif %}
+    <style>
+        .article-link {
+            color: inherit; /* Giữ nguyên màu sắc của văn bản */
+            text-decoration: none; /* Loại bỏ gạch chân */
+            transition: color 0.3s ease; /* Thêm hiệu ứng chuyển màu */
+        }
+
+        .article-link:hover {
+            color: #ffdb58; /* Màu sắc mới khi rê chuột, bạn có thể thay đổi màu này */
+            text-decoration: underline; /* Gạch chân khi rê chuột vào */
+        }
+    </style>
+
+    <div class="container my-5">
+        <h2 class="text-center" style="color: #6e543c; font-weight: bold;">Your Applications</h2>
+
+        <div class="float-right text-center mb-4">
+            <a href="{% url 'student-applications' %}?status=pending"
+               class="btn btn-secondary {% if status_filter == 'pending' %} active {% endif %}">Pending</a>
+            <a href="{% url 'student-applications' %}?status=approved"
+               class="btn btn-success {% if status_filter == 'approved' %} active {% endif %}">Approved</a>
+            <a href="{% url 'student-applications' %}?status=denied"
+               class="btn btn-danger {% if status_filter == 'denied' %} active {% endif %}">Denied</a>
+            <a href="{% url 'student-applications' %}"
+               class="btn btn-primary {% if not status_filter %} active {% endif %}">All</a>
+        </div>
+
+        {% if applications %}
+            <ul class="list-group my-4">
+                {% for application in applications %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
+                        <strong>Article:</strong>
+                        <a href="{% url 'detail' application.article.slug %}" class="article-link">
+                            {{ application.article.title }}
+                        </a>
+                    </span>
+                        <span class="badge
+                        {% if application.status == 'approved' %} bg-success
+                        {% elif application.status == 'denied' %} bg-danger
+                        {% else %} bg-secondary
+                        {% endif %}">
+                        {{ application.status|title }}
+                    </span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-center text-muted mt-4">
+                You have not applied for any articles yet. Go back to <a href="{% url 'index' %}">Home Page</a>
+            </p>
+        {% endif %}
+    </div>
 {% endblock %}
