@@ -37,7 +37,6 @@ def index(request):
             articles = paginator.page(paginator.num_pages)
 
     categories = Category.objects.all()
-    # featured_articles = Articles.objects.get(featured=True) "f_articles": featured_articles
     context = {"articles": articles, "msg": msg, "paginator": paginator, "cats": categories}
     return render(request, "articles_template/index.html", context)
 
@@ -74,7 +73,7 @@ def detail(request, slug):
                 messages.success(request, "Your comment has been posted.")
                 return redirect("detail", slug=article.slug)
 
-    context = {"articles": article, "form": form, "comments": comments, "r_articles": related_articles, "msg": msg, "apply_status": apply_status, "today": today,}
+    context = {"articles": article, "form": form, "comments": comments, "r_articles": related_articles, "msg": msg, "apply_status": apply_status, "today": today}
     return render(request, "articles_template/detail.html", context)
 
 @login_required(login_url="signin")
@@ -114,7 +113,6 @@ def update_article(request, slug):
 
 @login_required(login_url="signin")
 def delete_article(request, slug):
-    # article = Articles.objects.get(slug=slug)
     article = get_object_or_404(Articles, slug=slug)
     articles = Articles.objects.filter(user=request.user)
     delete_article = True
@@ -131,16 +129,14 @@ def apply_request(request, slug):
     article = get_object_or_404(Articles, slug=slug)
 
     if request.method == "POST" and request.user.is_authenticated:
-        # Kiểm tra xem yêu cầu đã tồn tại chưa
         apply_request, created = ApplyRequest.objects.get_or_create(user=request.user, article=article)
 
         if created:
-            # Yêu cầu mới được tạo
-            apply_request.status = "pending"  # Đặt trạng thái là 'pending'
+            apply_request.status = "pending"
             apply_request.save()
             messages.success(request, "Your apply request has been sent.")
         else:
-            messages.warning(request, "You have already applied for this article.")  # Thông báo nếu đã tồn tại
+            messages.warning(request, "You have already applied for this article.")
 
     return redirect("detail", slug=slug)
 
@@ -163,23 +159,10 @@ def update_request_status(request, request_id):
         if new_status == 'approved':
             article = req.article
             if article.slot > 0:
-                article.slot -= 1  # Giảm số slot xuống 1
-                article.save()  # Lưu thay đổi
+                article.slot -= 1
+                article.save()
 
     return redirect("manage-requests")
-
-# @login_required(login_url="signin")
-# def student_applications(request):
-#     if not request.user.is_authenticated or not request.user.is_student:
-#         return redirect('signin')  # Redirect to login if not authenticated or not a student
-#
-#     # Lấy tất cả các yêu cầu đã apply của user
-#     requests = ApplyRequest.objects.filter(user=request.user)
-#
-#     context = {
-#         "applications": requests,
-#     }
-#     return render(request, "articles_template/student_applications.html", context)
 
 @login_required(login_url="signin")
 def student_applications(request):
@@ -197,6 +180,6 @@ def student_applications(request):
 
     context = {
         "applications": applications,
-        "status_filter": status_filter,  # Để sử dụng trong template
+        "status_filter": status_filter,
     }
     return render(request, "articles_template/student_applications.html", context)

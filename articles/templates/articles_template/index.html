@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load tz %}
 {% load django_bootstrap5 %}
-
+{% load static %}
 {% block content %}
     <style>
         .card-img-top {
@@ -17,6 +17,7 @@
         <div class="container">
             <div class="text-center my-5">
                 <h1 class="fw-bolder" style="color: #6e543c">Welcome to SchoolarsNest!</h1>
+                <img style="align-items: center;width: 300px" src="{% static 'assets/scholarnest.png' %}" alt="ScholarNest Logo" class="logo me-2">
                 <p class="lead mb-0">Your ultimate destination for unlocking the world’s most impactful scholarships. Discover, apply, and let your journey to success soar! </p>
             </div>
         </div>
@@ -48,7 +49,7 @@
                                 <div class="card-body">
                                     <div class="small text-muted">{{ article.createdDate }}</div>
                                     <h2 class="card-title h4" style="color: #b87333">{{ article.title }}</h2>
-                                    <p class="card-text">{{ article.information|truncatechars:"100" }}</p>
+                                    <p class="card-text">{{ article.information|truncatechars:"80" }}</p>
                                     <a class="btn btn-primary" style="background-color: #d6ba73; border: white" href="{% url 'detail' article.slug %}">Read more →</a>
                                 </div>
                             </div>

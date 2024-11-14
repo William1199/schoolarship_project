@@ -13,6 +13,11 @@
             text-justify: inter-word; /* Nếu cần, có thể thêm thuộc tính này */
         }
 
+        .badge{
+            width: fit-content;
+            height: 25px;
+            align-content: center;
+        }
 
     </style>
     <!-- Page content-->
@@ -72,10 +77,19 @@
                         {% endif %}
                         <a class="badge bg-secondary text-decoration-none link-light"
                            href="#!">{{ articles.category }}</a>
-                        <a class="badge bg-secondary text-decoration-none link-light" href="#!">{{ articles.diploma }}
+                        <a class="badge bg-secondary text-decoration-none link-light" href="#!">{{ articles.diploma_after_course }}
                             degree</a>
                         <a class="badge bg-secondary text-decoration-none link-light"
                            href="#!">Location: {{ articles.location.name }}</a>
+                        <a class="badge bg-secondary text-decoration-none link-light" href="#!">
+                            Required: {{ articles.entry_language }} {{ articles.entry_points }}
+                        </a>
+                        <a class="badge bg-secondary text-decoration-none link-light" href="#!">
+                            Cost: {{ articles.costs }}
+                        </a>
+                        <a class="badge bg-secondary text-decoration-none link-light" href="#!">
+                            Course Length: {{ articles.course_length }}
+                        </a>
                         {% if articles.slot > 0 %}
                             <a class="badge bg-secondary text-decoration-none link-light"
                                href="#!">Slot: {{ articles.slot }}</a>
@@ -160,11 +174,14 @@
                         </form>
                     </div>
                 </div>
-                <!-- Related widget-->
+                <!-- Related Articles-->
                 <div class="card mb-4">
                     <div class="card-header">Related Articles</div>
                     <div class="card-body">
                         <div class="row">
+                            {% if not r_articles %}
+                                <p>Updating</p>
+                            {% endif %}
                             {% for articles in r_articles %}
                                 <div class="col-lg-6 mb-4">
                                     <!-- Blog post-->

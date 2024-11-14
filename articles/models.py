@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django_countries.fields import CountryField
 from django.conf import settings
@@ -20,8 +21,14 @@ class Articles(models.Model):
     thumbnail = models.ImageField(upload_to="img")
     slot = models.IntegerField(blank=True, null=True)
     admission_date = models.DateField()  # ngày nhập học
+
+    require_gpa = models.DecimalField(max_digits=3, decimal_places=2,
+                              validators=[MinValueValidator(0.0), MaxValueValidator(4.0)],
+                              help_text="GPA scale 0.0 - 4.0", blank=True, null=True)
+    entry_language = models.CharField(max_length=50)
     entry_points = models.CharField(max_length=50)
-    diploma = models.CharField(max_length=50)
+    diploma_after_course = models.CharField(max_length=50)
+
     costs = models.CharField(max_length=50)
     location = CountryField()
     course_length = models.CharField(max_length=50)

@@ -10,6 +10,25 @@ DEGREE_CHOICES = [
     ('master', "Master's Degree"),
     ('doctorate', "Doctorate Degree"),
 ]
+LANGUAGE_TYPE_CHOICES = [
+    ('ielts', "IELTS"),
+    ('toeic', "TOEIC"),
+    ('hsk', "HSK"),
+    ('tcf', "TCF"),
+    ('toefl', "TOEFL"),
+    ('jlpt', "JLPT"),
+    ('goethe', "Goethe Zertifikat"),
+    ('dele', "DELE"),
+    ('dalf', "DALF"),
+    ('cils', "CILS"),
+    ('celi', "CELI"),
+    ('telc', "TELC"),
+    ('cae', "Cambridge English: Advanced (CAE)"),
+    ('fce', "Cambridge English: First (FCE)"),
+    ('ptev', "PTE Academic"),
+    ('dsh', "DSH"),
+    ('nat-test', "NAT-TEST"),
+]
 
 class RegisterForm(UserCreationForm):
     email = forms.CharField(
@@ -26,6 +45,11 @@ class RegisterForm(UserCreationForm):
         max_digits=3, decimal_places=2, required=False,
         validators=[MinValueValidator(0.0), MaxValueValidator(4.0)],
         widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "Enter Your GPA (0.0 - 4.0)"}))
+    language_type = forms.ChoiceField(
+        choices=LANGUAGE_TYPE_CHOICES,
+        required=False,
+        widget=forms.Select(attrs={"class": "form-control"})
+    )
     language_score = forms.DecimalField(
         max_digits=5, decimal_places=2, required=False,
         widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "Enter Your Language Score"}))
@@ -41,7 +65,7 @@ class RegisterForm(UserCreationForm):
 
     class Meta:
         model = get_user_model()
-        fields = ["email", "username", "password1", "password2", "is_student", "gpa", "language_score",
+        fields = ["email", "username", "password1", "password2", "is_student", "gpa", "language_type", "language_score",
                   "language_certificate", "desired_study_country", "degree_interest"]
 
     def clean(self):
@@ -55,6 +79,8 @@ class RegisterForm(UserCreationForm):
             if is_student:
                 if not cleaned_data.get("gpa"):
                     self.add_error("gpa", "GPA is required for students.")
+                if not cleaned_data.get("language_type"):
+                    self.add_error("language_type", "Language type is required for students.")
                 if not cleaned_data.get("language_score"):
                     self.add_error("language_score", "Language score is required for students.")
                 if not cleaned_data.get("language_certificate"):
@@ -101,6 +127,10 @@ class UpdateProfileForm(forms.ModelForm):
     gpa = forms.DecimalField(
         label='Your GPA',
         widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "Enter GPA (0.0 - 4.0)"}))
+    language_type = forms.ChoiceField(
+        choices=LANGUAGE_TYPE_CHOICES,
+        widget=forms.Select(attrs={"class": "form-control"})
+    )
     language_score = forms.DecimalField(
         widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "Enter language score"}))
     language_certificate = forms.ImageField(
@@ -119,7 +149,7 @@ class UpdateProfileForm(forms.ModelForm):
         model = get_user_model()
         fields = [
             "first_name", "last_name", "username", "email", "dateOfBirth", "address", "bio",
-            "phone", "role", "profile_pic", "gpa", "language_score", "language_certificate",
+            "phone", "role", "profile_pic", "gpa", "language_type", "language_score", "language_certificate",
             "desired_study_country", "degree_interest"
         ]
 
@@ -129,7 +159,7 @@ class UpdateProfileForm(forms.ModelForm):
         self.fields['email'].disabled = True
 
         if not is_student:
-            student_fields = ['gpa', 'language_score', 'language_certificate', 'desired_study_country',
+            student_fields = ['gpa', "language_type", 'language_score', 'language_certificate', 'desired_study_country',
                               'degree_interest']
             for field in student_fields:
                 self.fields.pop(field, None)

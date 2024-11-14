@@ -1,5 +1,4 @@
 from django.db import models
-import uuid
 from django.contrib.auth.models import AbstractUser
 from django_countries.fields import CountryField
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -20,7 +19,8 @@ class Users(AbstractUser):
     gpa = models.DecimalField(max_digits=3, decimal_places=2,
                               validators=[MinValueValidator(0.0), MaxValueValidator(4.0)],
                               help_text="GPA scale 0.0 - 4.0", blank=True, null=True)
-    language_score = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    language_type = models.CharField(max_length=50, null=True, blank=True)
+    language_score = models.CharField(max_length=50, null=True, blank=True)
     language_certificate = models.ImageField(upload_to="language_certificate", null=True)
 
     desired_study_country = CountryField(blank=True, null=True)

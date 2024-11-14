@@ -121,9 +121,15 @@
                                 <hr>
                                 <div class="row">
                                     <div class="col-sm-3">
+                                        <h6 class="mb-0">Language Type</h6>
+                                    </div>
+                                    <div class="col-sm-3 text-secondary">
+                                        {{ user.language_type }}
+                                    </div>
+                                    <div class="col-sm-3">
                                         <h6 class="mb-0">Language Score</h6>
                                     </div>
-                                    <div class="col-sm-9 text-secondary">
+                                    <div class="col-sm-3 text-secondary">
                                         {{ user.language_score }}
                                     </div>
                                 </div>
@@ -163,31 +169,35 @@
 
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <a class="btn btn-info" target="__blank" style="color: white;background-color: #d6ba73; border: white"
+                                    <a class="btn btn-info" target="__blank"
+                                       style="color: white;background-color: #d6ba73; border: white"
                                        href=" {% url "update_profile" %} ">Edit</a>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="container blog-container" >
+                    <div class="container blog-container">
                         {% if user.is_student %}
 
                         {% else %}
                             <h3>My Articles</h3>
                         {% endif %}
-                    <br>
+                        <br>
                         <div class="row">
                             {% for article in articles %}
                                 <div class="col-md-6">
                                     <div class="card mb-4">
-                                        <a href="{% url 'detail' article.slug %}"><img class="card-img-top" style="max-height: 230px; width: 100%; object-fit: cover;" src="{{ article.thumbnail.url }}"
-                                                          alt="..."/></a>
+                                        <a href="{% url 'detail' article.slug %}"><img class="card-img-top"
+                                                                                       style="max-height: 230px; width: 100%; object-fit: cover;"
+                                                                                       src="{{ article.thumbnail.url }}"
+                                                                                       alt="..."/></a>
                                         <div class="card-body">
                                             <div class="small text-muted">{{ article.created }}</div>
                                             <h2 class="card-title h4">{{ article.title }}</h2>
                                             <p class="card-text">{{ article.information | safe | truncatechars:"100" }}</p>
-                                            <a class="btn btn-primary" style="background-color: #d6ba73; border: white" href="{% url 'detail' slug=article.slug %}">Read
+                                            <a class="btn btn-primary" style="background-color: #d6ba73; border: white"
+                                               href="{% url 'detail' slug=article.slug %}">Read
                                                 more →</a>
                                             <span style="float: right" class="actions">
                                             <a href="{% url 'update-article' article.slug %}"><i

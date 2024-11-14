@@ -14,18 +14,18 @@ def signup(request):
             if not is_student:
                 # Nếu không phải là sinh viên, gán các trường bổ sung về null
                 user.gpa = None
+                user.language_type = None
                 user.language_score = None
                 user.language_certificate = None
                 user.desired_study_country = None
                 user.degree_interest = None
-            user.save()  # Lưu đối tượng người dùng vào DB
+            user.save()
             messages.success(request, "Account created successfully")
-            return redirect("signin")  # Chuyển hướng đến trang chính hoặc một trang khác
+            return redirect("signin")
         else:
-            # Nếu form không hợp lệ, hiển thị thông báo lỗi
             messages.error(request, "Please correct the errors below.")
     else:
-        form = RegisterForm()  # Nếu không phải là POST, khởi tạo form rỗng
+        form = RegisterForm()
 
     context = {"form": form}
     return render(request, 'project/signup.html', context)

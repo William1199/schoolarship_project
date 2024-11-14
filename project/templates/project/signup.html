@@ -44,6 +44,14 @@
                         <div class="error-message">{{ field.errors }}</div> <!-- Hiển thị thông báo lỗi cho GPA -->
                     {% endif %}
                 </div>
+            {% elif field.name == "language_type" %}
+                <div class="mb-3 student-fields language-type-dropdown">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="error-message">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
             {% elif field.name == "language_score" %}
                 <div class="mb-3 student-fields">
                     {{ field.label_tag }} {{ field }} <!-- Hiển thị trường Language Score -->
@@ -72,24 +80,22 @@
             {% elif field.name == "degree_interest" %}
                 <div class="mb-3 student-fields degree-interest-dropdown">
                     {{ field.label_tag }}
-{#                    <select name="degree_interest" class="form-control" id="{{ field.id_for_label }}" required>#}
-{#                        <option value="">Select Degree</option>#}
-{#                        <option value="bachelor">Bachelor's Degree</option>#}
-{#                        <option value="master">Master's Degree</option>#}
-{#                        <option value="doctorate">Doctorate Degree</option>#}
-{#                    </select>#}
+                    {#                    <select name="degree_interest" class="form-control" id="{{ field.id_for_label }}" required>#}
+                    {#                        <option value="">Select Degree</option>#}
+                    {#                        <option value="bachelor">Bachelor's Degree</option>#}
+                    {#                        <option value="master">Master's Degree</option>#}
+                    {#                        <option value="doctorate">Doctorate Degree</option>#}
+                    {#                    </select>#}
                     {{ field }}
                     {% if field.errors %}
                         <div class="error-message">{{ field.errors }}</div>
-                        <!-- Hiển thị thông báo lỗi cho Degree Interest -->
                     {% endif %}
                 </div>
             {% else %}
                 <div class="mb-3">
-                    {{ field.label_tag }} {{ field }} <!-- Hiển thị các trường khác -->
+                    {{ field.label_tag }} {{ field }}
                     {% if field.errors %}
                         <div class="error-message">{{ field.errors }}</div>
-                        <!-- Hiển thị thông báo lỗi cho các trường khác -->
                     {% endif %}
                 </div>
             {% endif %}
@@ -99,24 +105,26 @@
                 <div class="alert alert-{{ message.tags }}">{{ message }}</div>
             {% endfor %}
         {% endif %}
-        <button class="btn btn-primary" type="submit" style="width:100%;background-color: #d6ba73; border: white">Create Account</button>
+        <button class="btn btn-primary" type="submit" style="width:100%;background-color: #d6ba73; border: white">Create
+            Account
+        </button>
         <p style="text-align:center;">Already have an account? <a href="{% url 'signin' %}">Login</a></p>
     </form>
 
     <script>
-    function toggleStudentFields() {
-        const isStudentChecked = document.getElementById("id_is_student").checked;
-        const studentFields = document.querySelectorAll(".student-fields");
+        function toggleStudentFields() {
+            const isStudentChecked = document.getElementById("id_is_student").checked;
+            const studentFields = document.querySelectorAll(".student-fields");
 
-        studentFields.forEach(field => {
-            const inputField = field.querySelector('input, select'); // Tìm trường input hoặc select bên trong
-            field.style.display = isStudentChecked ? "block" : "none";
-            inputField.required = isStudentChecked; // Đặt thuộc tính required tùy thuộc vào trạng thái
-        });
-    }
+            studentFields.forEach(field => {
+                const inputField = field.querySelector('input, select');
+                field.style.display = isStudentChecked ? "block" : "none";
+                inputField.required = isStudentChecked;
+            });
+        }
 
-    document.getElementById("id_is_student").addEventListener("change", toggleStudentFields);
-    document.addEventListener("DOMContentLoaded", toggleStudentFields);
-</script>
+        document.getElementById("id_is_student").addEventListener("change", toggleStudentFields);
+        document.addEventListener("DOMContentLoaded", toggleStudentFields);
+    </script>
 
 {% endblock content %}
