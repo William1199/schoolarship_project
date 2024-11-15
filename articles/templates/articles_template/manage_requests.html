@@ -1,27 +1,32 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-center mb-4" style="color: #6e543c">Manage Apply Requests</h2>
-    {% if requests %}
-        <div class="list-group">
-            {% for req in requests %}
-                <div class="list-group-item d-flex justify-content-between align-items-center">
-                    <div>
-                        <p class="mb-1"><strong>{{ req.user.username }}</strong> applied for <strong>{{ req.article.title }}</strong></p>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4" style="color: #6e543c">Manage Apply Requests</h2>
+        {% if requests %}
+            <div class="list-group">
+                {% for req in requests %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="mb-1">
+                                <a href="{% url 'view-user-profile' req.user.id %}" target="_blank" style="color: #d6ba73">
+                                    <strong>{{ req.user.username }}</strong>
+                                </a> request to apply for
+                                <a href="{% url 'detail' req.article.slug %}" target="_blank" style="color: #d6ba73">
+                                    <strong>{{ req.article.title }}</strong>
+                                </a>
+                        </div>
+                        <form method="POST" action="{% url 'update-request-status' req.id %}">
+                            {% csrf_token %}
+                            <button name="status" value="approved" class="btn btn-success btn-sm me-2">Approve</button>
+                            <button name="status" value="denied" class="btn btn-danger btn-sm">Deny</button>
+                        </form>
                     </div>
-                    <form method="POST" action="{% url 'update-request-status' req.id %}">
-                        {% csrf_token %}
-                        <button name="status" value="approved" class="btn btn-success btn-sm me-2">Approve</button>
-                        <button name="status" value="denied" class="btn btn-danger btn-sm">Deny</button>
-                    </form>
-                </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="alert alert-warning text-center" role="alert">
-            No pending requests. Go back to <a href="{% url 'index' %}">Home Page</a>
-        </div>
-    {% endif %}
-</div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-warning text-center" role="alert">
+                No pending requests. Go back to <a href="{% url 'index' %}">Home Page</a>
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}

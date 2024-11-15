@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.text import slugify
@@ -183,3 +184,11 @@ def student_applications(request):
         "status_filter": status_filter,
     }
     return render(request, "articles_template/student_applications.html", context)
+
+@login_required(login_url="signin")
+def view_user_profile(request, user_id):
+    User = get_user_model()
+    user = get_object_or_404(User, id=user_id)
+    articles = Articles.objects.filter(user=user)
+    context = {"user": user, "articles": articles}
+    return render(request, "project/profile.html", context)

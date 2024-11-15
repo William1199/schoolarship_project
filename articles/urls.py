@@ -11,4 +11,6 @@ urlpatterns = [
     path("manage/requests", views.manage_requests, name="manage-requests"),
     path("update/request/<int:request_id>", views.update_request_status, name="update-request-status"),
     path("student-applications/", views.student_applications, name="student-applications"),
+
+    path("user/profile/<int:user_id>/", views.view_user_profile, name="view-user-profile"),
 ]

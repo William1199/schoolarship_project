@@ -9,6 +9,34 @@
             height: 250px;
             object-fit: cover;
         }
+
+        .image-container {
+            position: relative;
+            width: 300px; /* Đặt kích thước phù hợp */
+            height: 250px; /* Đặt kích thước phù hợp */
+        }
+
+        .image-container img {
+            position: absolute;
+            top: 0;
+            left: 10px;
+            width: 100%;
+            height: 100%;
+            transition: opacity 0.3s ease-in-out; /* Tạo hiệu ứng mờ dần */
+        }
+
+        .image-container .color {
+            opacity: 0; /* Ẩn hình "color" mặc định */
+        }
+
+        .image-container:hover .color {
+            opacity: 1; /* Hiển thị hình "color" khi hover */
+        }
+
+        .image-container:hover .no-color {
+            opacity: 0; /* Ẩn hình "no color" khi hover */
+        }
+
     </style>
 
 
@@ -16,9 +44,11 @@
     <header class="py-5 bg-light border-bottom mb-4">
         <div class="container">
             <div class="text-center my-5">
-                <h1 class="fw-bolder" style="color: #6e543c">Welcome to SchoolarsNest!</h1>
-                <img style="align-items: center;width: 300px" src="{% static 'assets/scholarnest.png' %}" alt="ScholarNest Logo" class="logo me-2">
-                <p class="lead mb-0">Your ultimate destination for unlocking the world’s most impactful scholarships. Discover, apply, and let your journey to success soar! </p>
+                <h1 class="fw-bolder" style="color: #6e543c">Welcome to ScholarNest!</h1>
+                <img style="align-items: center;width: 300px" src="{% static 'assets/scholarnest.png' %}"
+                     alt="ScholarNest Logo" class="logo me-2">
+                <p class="lead mb-0">Your ultimate destination for unlocking the world’s most impactful scholarships.
+                    Discover, apply, and let your journey to success soar! </p>
             </div>
         </div>
     </header>
@@ -45,12 +75,15 @@
                         <div class="col-lg-6">
                             <!-- Blog post-->
                             <div class="card mb-4">
-                                <a href="{% url 'detail' article.slug %}"><img class="card-img-top" src="{{ article.thumbnail.url }}" alt="..."/></a>
+                                <a href="{% url 'detail' article.slug %}"><img class="card-img-top"
+                                                                               src="{{ article.thumbnail.url }}"
+                                                                               alt="..."/></a>
                                 <div class="card-body">
                                     <div class="small text-muted">{{ article.createdDate }}</div>
                                     <h2 class="card-title h4" style="color: #b87333">{{ article.title }}</h2>
                                     <p class="card-text">{{ article.information|truncatechars:"80" }}</p>
-                                    <a class="btn btn-primary" style="background-color: #d6ba73; border: white" href="{% url 'detail' article.slug %}">Read more →</a>
+                                    <a class="btn btn-primary" style="background-color: #d6ba73; border: white"
+                                       href="{% url 'detail' article.slug %}">Read more →</a>
                                 </div>
                             </div>
                         </div>
@@ -64,7 +97,8 @@
                     <ul class="pagination justify-content-center my-4">
 
                         {% if articles.has_previous %}
-                            <li class="page-item"><a class="page-link" style="border: #d6ba73" href="?page={{ articles.previous_page_number }}"
+                            <li class="page-item"><a class="page-link" style="border: #d6ba73"
+                                                     href="?page={{ articles.previous_page_number }}"
                                                      tabindex="-1" aria-disabled="true">Previous</a></li>
 
                         {% endif %}
@@ -73,12 +107,14 @@
 
                             {% if page == articles.number %}
 
-                                <li class="page-item active" aria-current="page"><a class="page-link" style="border: #d6ba73"
+                                <li class="page-item active" aria-current="page"><a class="page-link"
+                                                                                    style="border: #d6ba73"
                                                                                     href="?page={{ page }}">{{ page }}</a>
                                 </li>
 
                             {% else %}
-                                <li class="page-item"><a class="page-link" style="border: #d6ba73" href="?page={{ page }}">{{ page }}</a></li>
+                                <li class="page-item"><a class="page-link" style="border: #d6ba73"
+                                                         href="?page={{ page }}">{{ page }}</a></li>
 
                             {% endif %}
 
@@ -101,7 +137,9 @@
                             <div class="input-group">
                                 <input class="form-control" name="search" type="text" placeholder="Enter search term..."
                                        aria-label="Enter search term..." aria-describedby="button-search"/>
-                                <button class="btn btn-primary" style="background-color: #d6ba73; border: white" id="button-search">Go!</button>
+                                <button class="btn btn-primary" style="background-color: #d6ba73; border: white"
+                                        id="button-search">Go!
+                                </button>
                             </div>
                             <br>
                             {% if msg %}
@@ -134,10 +172,18 @@
                 </div>
                 <!-- Side widget-->
                 <div class="card mb-4">
-                    <div class="card-header">Side Widget</div>
-                    <div class="card-body">You can put anything you want inside of these side widgets. They are easy to
-                        use, and feature the Bootstrap 5 card component!
-                    </div>
+                    <div class="card-header">ScholarNest AI</div>
+                        <div class="image-container">
+                            <a href="http://192.168.1.18:8501/" target="_blank">
+                            <img src="{% static 'assets/scholarnest_ai_no_color.png' %}" alt=""
+                                 class="no-color">
+                            <img src="{% static 'assets/scholarnest_ai_color.png' %}" alt=""
+                                 class="color">
+                            </a>
+                        </div>
+                        <div class="card-body">
+                        Don't let scholarship hunting stress you out. ScholarNest AI can help you streamline the process.
+                        </div>
                 </div>
             </div>
         </div>

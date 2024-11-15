@@ -15,9 +15,9 @@ from vanna_calls import (
 avatar_url = "http://127.0.0.1:8000/static/assets/scholarnest.png"
 
 st.set_page_config(
-    page_title="ScholarNest AI",  # Tên ứng dụng
-    page_icon="http://127.0.0.1:8000/static/assets/scholarnest.png",  # Đường dẫn favicon
-    layout="wide"  # Có thể dùng để điều chỉnh layout của trang
+    page_title="ScholarNest AI",
+    page_icon="http://127.0.0.1:8000/static/assets/scholarnest.png",
+    layout="wide"
 )
 st.sidebar.title("Output Settings")
 st.sidebar.checkbox("Show SQL", value=True, key="show_sql")
