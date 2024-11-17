@@ -71,7 +71,7 @@ class CreateArticleForm(forms.ModelForm):
                                     widget=forms.TextInput(
                                         attrs={"class": "form-control", "placeholder": "Enter course length"})
                                     )
-    information = forms.CharField(label="Infotmation about schoolarship",
+    information = forms.CharField(label="Information about schoolarship",
                                   widget=forms.Textarea(attrs={"class": "form-control",
                                   "placeholder": "Enter detailed information about schoolarship"})
                                   )

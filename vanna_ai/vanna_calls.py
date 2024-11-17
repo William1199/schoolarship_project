@@ -1,6 +1,29 @@
 import streamlit as st
-
 from vanna.remote import VannaDefault
+
+
+# Hàm kiểm tra các câu hỏi nhạy cảm
+def is_sensitive_question(question: str) -> bool:
+    """
+    Kiểm tra nếu câu hỏi có chứa từ khóa nhạy cảm.
+    Trả về True nếu câu hỏi không được phép xử lý.
+    """
+    restricted_keywords = [
+        "admin account", "is_staff = 1", "admin users", "show me admins",
+        "staff users", "password", "credentials", "authentication"
+    ]
+    return any(keyword in question.lower() for keyword in restricted_keywords)
+
+
+# Hàm kiểm tra các nội dung SQL nhạy cảm
+def is_sensitive_sql(sql: str) -> bool:
+    """
+    Kiểm tra nếu SQL có chứa các từ khóa nhạy cảm.
+    Trả về True nếu SQL không được phép thực thi.
+    """
+    restricted_sql_keywords = ["password", "credentials", "authentication"]
+    return any(keyword in sql.lower() for keyword in restricted_sql_keywords)
+
 
 @st.cache_resource(ttl=3600)
 def setup_vanna():
@@ -12,31 +35,79 @@ def setup_vanna():
         print("Lỗi kết nối database:", e)
     return vn
 
+
+@st.cache_data(show_spinner="Generating SQL query ...")
+def generate_sql_cached(question: str):
+    vn = setup_vanna()
+
+    # Kiểm tra câu hỏi nhạy cảm trước khi xử lý
+    if is_sensitive_question(question):
+        st.error("This question contains sensitive content and cannot be processed. Please try another question!")
+        return None  # Không trả về SQL nếu câu hỏi nhạy cảm
+
+    sql = vn.generate_sql(question=question, allow_llm_to_see_data=True)
+
+    # Kiểm tra SQL nhạy cảm sau khi sinh ra truy vấn
+    if is_sensitive_sql(sql):
+        st.error("This SQL query contains sensitive data and cannot be executed.")
+        return None  # Không trả về SQL nếu truy vấn nhạy cảm
+
+    return sql
+
+
+@st.cache_data(show_spinner="Running SQL query ...")
+def run_sql_cached(sql: str):
+    vn = setup_vanna()
+
+    # Kiểm tra SQL nhạy cảm trước khi thực thi
+    if is_sensitive_sql(sql):
+        st.error("This SQL query contains sensitive data and cannot be executed.")
+        return None  # Không thực thi SQL
+
+    return vn.run_sql(sql=sql)
+
+
+@st.cache_data(show_spinner="Generating followup questions ...")
+def generate_followup_cached(question, sql, df):
+    vn = setup_vanna()
+
+    # Kiểm tra câu hỏi nhạy cảm trước khi xử lý
+    if is_sensitive_question(question):
+        st.error("This question contains sensitive content and cannot be processed.")
+        return []  # Trả về danh sách rỗng nếu câu hỏi không hợp lệ
+
+    return vn.generate_followup_questions(question=question, sql=sql, df=df)
+
+
+@st.cache_data(show_spinner="Generating summary ...")
+def generate_summary_cached(question, df):
+    vn = setup_vanna()
+
+    # Kiểm tra câu hỏi nhạy cảm trước khi xử lý
+    if is_sensitive_question(question):
+        st.error("This question contains sensitive content and cannot be processed.")
+        return "Summary is not available for this question."  # Thông báo mặc định
+
+    return vn.generate_summary(question=question, df=df)
+
+
 @st.cache_data(show_spinner="Generating sample questions ...")
 def generate_questions_cached():
     vn = setup_vanna()
     return vn.generate_questions()
 
 
-@st.cache_data(show_spinner="Generating SQL query ...")
-def generate_sql_cached(question: str):
-    vn = setup_vanna()
-    return vn.generate_sql(question=question, allow_llm_to_see_data=True)
-
 @st.cache_data(show_spinner="Checking for valid SQL ...")
 def is_sql_valid_cached(sql: str):
     vn = setup_vanna()
     return vn.is_sql_valid(sql=sql)
 
-@st.cache_data(show_spinner="Running SQL query ...")
-def run_sql_cached(sql: str):
-    vn = setup_vanna()
-    return vn.run_sql(sql=sql)
 
 @st.cache_data(show_spinner="Checking if we should generate a chart ...")
 def should_generate_chart_cached(question, sql, df):
     vn = setup_vanna()
     return vn.should_generate_chart(df=df)
+
 
 @st.cache_data(show_spinner="Generating Plotly code ...")
 def generate_plotly_code_cached(question, sql, df):
@@ -49,14 +120,3 @@ def generate_plotly_code_cached(question, sql, df):
 def generate_plot_cached(code, df):
     vn = setup_vanna()
     return vn.get_plotly_figure(plotly_code=code, df=df)
-
-
-@st.cache_data(show_spinner="Generating followup questions ...")
-def generate_followup_cached(question, sql, df):
-    vn = setup_vanna()
-    return vn.generate_followup_questions(question=question, sql=sql, df=df)
-
-@st.cache_data(show_spinner="Generating summary ...")
-def generate_summary_cached(question, df):
-    vn = setup_vanna()
-    return vn.generate_summary(question=question, df=df)
