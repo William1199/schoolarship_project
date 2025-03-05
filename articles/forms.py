@@ -33,13 +33,13 @@ class CreateArticleForm(forms.ModelForm):
     title = forms.CharField(
         widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Enter title"})
     )
-    thumbnail = forms.ImageField(label="Article's picture",
+    thumbnail = forms.ImageField(label="Article's Picture",
                                  widget=forms.FileInput(attrs={"class": "form-control", "placeholder": "Add image"})
                                  )
     admission_date = forms.DateField(
         widget=forms.DateInput(attrs={"class": "form-control", "placeholder": "Enter admission date", "type": "date"})
     )
-    slot = forms.IntegerField(
+    slot = forms.IntegerField(label="Slot Available",
         widget=forms.NumberInput(attrs={
             "class": "form-control",
             "placeholder": "Enter slot number",
@@ -47,7 +47,7 @@ class CreateArticleForm(forms.ModelForm):
             "min": "1",  # Đặt giá trị tối thiểu nếu muốn
         })
     )
-    require_gpa = forms.DecimalField(
+    require_gpa = forms.DecimalField(label="Required GPA",
         max_digits=3, decimal_places=2, required=False,
         validators=[MinValueValidator(0.0), MaxValueValidator(4.0)],
         widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "Required GPA (0.0 - 4.0)"}))
@@ -63,19 +63,19 @@ class CreateArticleForm(forms.ModelForm):
     costs = forms.CharField(
         widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Enter costs"})
     )
-    location = forms.ChoiceField(label="Location of study",
+    location = forms.ChoiceField(label="Scholarship Location",
                                  choices=Articles._meta.get_field('location').get_choices(),
                                  widget=forms.Select(attrs={"class": "form-select", "placeholder": "Select location"})
                                  )
-    course_length = forms.CharField(label="Course length",
+    course_length = forms.CharField(label="Course Length",
                                     widget=forms.TextInput(
                                         attrs={"class": "form-control", "placeholder": "Enter course length"})
                                     )
-    information = forms.CharField(label="Information about schoolarship",
+    information = forms.CharField(label="Information About Scholarship",
                                   widget=forms.Textarea(attrs={"class": "form-control",
-                                  "placeholder": "Enter detailed information about schoolarship"})
+                                  "placeholder": "Enter detailed information about scholarship"})
                                   )
-    category = forms.ModelChoiceField(label="Type of Schoolarship",
+    category = forms.ModelChoiceField(label="Type of Scholarship",
         queryset=Category.objects.all(),
         widget=forms.Select(attrs={"class": "form-select", "placeholder": "Select type"})
     )
