@@ -59,32 +59,40 @@ st.markdown(f"""
     </div>
 """, unsafe_allow_html=True)
 
-# Function to set question
-def set_question(question):
-    st.session_state["my_question"] = question
-
 # Hàm để dịch văn bản sang tiếng Anh
 def translate_to_english(text):
     translator = Translator()
     translated = translator.translate(text, src='auto', dest='en')  # Dịch sang tiếng Anh
     return translated.text
 
-# Suggested Questions Button
-assistant_message_suggested = st.chat_message("assistant", avatar=avatar_url)
-if assistant_message_suggested.button("Click here to show suggested questions"):
-    st.session_state["my_question"] = None
-    questions = generate_questions_cached()
-    for question in questions:
-        st.button(question, on_click=set_question, args=(question,))
+# Hàm để xử lý câu hỏi khi người dùng bấm vào câu hỏi đề xuất
+def set_question(question):
+    st.session_state["my_question"] = question
+
+# Tạo phần câu hỏi gợi ý luôn được hiển thị khi chương trình bắt đầu
+if "show_questions" not in st.session_state:
+    st.session_state["show_questions"] = True  # Mặc định hiển thị câu hỏi gợi ý ngay khi bắt đầu
+
+# Hiển thị câu hỏi gợi ý ngay từ đầu mà không cần bấm nút
+if st.session_state["show_questions"]:
+    with st.expander("Suggested questions"):
+        questions = generate_questions_cached()  # Tạo câu hỏi gợi ý một lần
+        for question in questions:
+            # Tạo button cho mỗi câu hỏi gợi ý
+            if st.button(question, on_click=set_question, args=(question,)):  # Khi bấm vào, câu hỏi sẽ được lưu vào session_state
+                break
 
 # Chat Input
 my_question = st.chat_input("Ask me a question about scholarship")
 if my_question:
-    # Dịch câu hỏi sang tiếng Anh
-    my_question = translate_to_english(my_question)  # Chỉnh sửa: dịch câu hỏi trước khi xử lý
+    set_question(my_question)  # Lưu câu hỏi vào session_state
     st.session_state["my_question"] = my_question
     user_message = st.chat_message("user")
     user_message.write(my_question)
+
+# Kiểm tra nếu có câu hỏi trong session_state và xử lý
+if "my_question" in st.session_state and st.session_state["my_question"]:
+    my_question = st.session_state["my_question"]
 
     # Generate SQL
     sql = generate_sql_cached(question=my_question)
@@ -96,7 +104,7 @@ if my_question:
                 assistant_message_sql.code(sql, language="sql", line_numbers=True)
         else:
             assistant_message_error = st.chat_message("assistant", avatar=avatar_url)
-            assistant_message_error.error("Invalid SQL generated.")
+            assistant_message_error.error("Sorry I cannot generate SQL query through your question.")
             st.session_state["my_question"] = None
             st.stop()
 
@@ -108,11 +116,11 @@ if my_question:
             # Display table
             if st.session_state.get("show_table", True):
                 assistant_message_table = st.chat_message("assistant", avatar=avatar_url)
-                if len(df) > 10:
-                    assistant_message_table.text("First 10 rows of data")
-                    assistant_message_table.dataframe(df.head(10))
-                else:
-                    assistant_message_table.dataframe(df)
+                # if len(df) > 10:
+                #     assistant_message_table.text("First 10 rows of data")
+                #     assistant_message_table.dataframe(df.head(10))
+                # else:
+                assistant_message_table.dataframe(df)
 
             # Generate Chart
             if should_generate_chart_cached(question=my_question, sql=sql, df=df):

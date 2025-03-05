@@ -8,7 +8,7 @@ from .forms import CreateArticleForm, CommentForm
 from .models import Articles, Comment, Category, ApplyRequest
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.utils import timezone
-
+from django.http import HttpResponseRedirect
 # Create your views here.
 def index(request):
     keyword = request.GET.get("search")
@@ -140,7 +140,6 @@ def apply_request(request, slug):
             messages.warning(request, "You have already applied for this article.")
 
     return redirect("detail", slug=slug)
-
 
 @login_required(login_url="signin")
 def manage_requests(request):

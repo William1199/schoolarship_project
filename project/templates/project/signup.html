@@ -23,6 +23,7 @@
         .country-select-flag {
             display: none;
         }
+
     </style>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -30,7 +31,7 @@
     <form action="" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <h1 style="text-align:center;">Welcome</h1>
-        <h3 style="text-align:center;">Create An Account</h3>
+        <h3 style="text-align:center;">to ScholarNest</h3>
 
         {% for field in form %}
             {% if field.name == "is_student" %}
@@ -53,7 +54,7 @@
                     {% endif %}
                 </div>
             {% elif field.name == "language_score" %}
-                <div class="mb-3 student-fields">
+                <div id="language_score_field" class="mb-3 student-fields">
                     {{ field.label_tag }} {{ field }} <!-- Hiển thị trường Language Score -->
                     {% if field.errors %}
                         <div class="error-message">{{ field.errors }}</div>
@@ -124,7 +125,47 @@
         }
 
         document.getElementById("id_is_student").addEventListener("change", toggleStudentFields);
-        document.addEventListener("DOMContentLoaded", toggleStudentFields);
+        {#document.addEventListener("DOMContentLoaded", toggleStudentFields);#}
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const languageTypeSelect = document.getElementById("id_language_type");  // Lấy select của language_type
+            const languageScoreField = document.getElementById("id_language_score"); // Lấy trường language_score
+
+            // Hàm kiểm tra và vô hiệu hóa language_score nếu chọn 'others'
+            function toggleLanguageScoreField() {
+                if (languageTypeSelect.value === "others") {
+                    languageScoreField.disabled = true;  // Vô hiệu hóa trường language_score
+                } else {
+                    languageScoreField.disabled = false; // Bật lại trường language_score
+                }
+            }
+
+            // Gọi hàm ngay lập tức để kiểm tra trạng thái ban đầu
+            toggleLanguageScoreField();
+
+            // Gắn sự kiện thay đổi vào dropdown
+            languageTypeSelect.addEventListener("change", toggleLanguageScoreField);
+
+            // Hàm xử lý khi checkbox "Is Student" thay đổi
+            document.getElementById("id_is_student").addEventListener("change", function () {
+                toggleStudentFields();
+            });
+
+            // Đảm bảo rằng các trường "student" được xử lý khi trang được tải
+            toggleStudentFields();
+
+            function toggleStudentFields() {
+                const isStudentChecked = document.getElementById("id_is_student").checked;
+                const studentFields = document.querySelectorAll(".student-fields");
+
+                studentFields.forEach(field => {
+                    const inputField = field.querySelector('input, select');
+                    field.style.display = isStudentChecked ? "block" : "none";  // Hiển thị hoặc ẩn các trường học sinh
+                    inputField.required = isStudentChecked;  // Yêu cầu các trường học sinh nếu là sinh viên
+                });
+            }
+        });
+
     </script>
 
 {% endblock content %}

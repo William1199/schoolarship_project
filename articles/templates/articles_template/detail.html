@@ -10,7 +10,7 @@
 
         p {
             text-align: justify;
-            text-justify: inter-word; /* Nếu cần, có thể thêm thuộc tính này */
+            text-justify: inter-word;
         }
 
         .badge {
@@ -45,7 +45,6 @@
         .image-container:hover .no-color {
             opacity: 0; /* Ẩn hình "no color" khi hover */
         }
-
     </style>
     <!-- Page content-->
     <div class="container mt-5">
@@ -240,7 +239,7 @@
                                             <h5 class="card-title h4"
                                                 style="font-size: 20px;color: #6e543c">{{ articles.title|truncatechars:"25" }}</h5>
                                             <p class="card-text"
-                                               style="overflow: hidden; text-overflow: ellipsis;">{{ articles.information|truncatechars:"90" }}</p>
+                                               style="overflow: hidden; text-overflow: ellipsis">{{ articles.information|truncatechars:"50" }}</p>
                                         </div>
                                     </div>
                                 </div>

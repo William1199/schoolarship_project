@@ -130,14 +130,14 @@
 {% for message in messages %}
 
     <div class="container">
-        <div class="alert alert-{{ message.tags }}" style="margin-top: 20px" role="alert">
+        <div class="alert alert-{{ message.tags }}" style="margin-top: 100px;margin-bottom: 0px" role="alert">
             {{ message }}
         </div>
     </div>
 
 {% endfor %}
 
-<div class="content" style="padding-top: 80px;">
+<div class="content" style="padding-top: 50px;">
     {% block content %}
     {% endblock %}
 </div>
@@ -146,44 +146,39 @@
 </button>
 
 <!-- Footer-->
-<footer>
+<footer class="py-5 text-white">
     <div class="container">
         <div class="row">
-            <div class="col-lg-3 col-md-6">
-                <h5 class="text-white">Quick Links</h5>
+            <!-- Quick Links -->
+            <div class="col-lg-3 col-md-6 mb-4">
+                <h5 class="mb-3">Quick Links</h5>
                 <ul class="list-unstyled">
-                    <li><a href="#" class="text-white">Home</a></li>
-                    <li><a href="#" class="text-white">About</a></li>
-                    <li><a href="#" class="text-white">Tech Journeys</a></li>
-                    <li><a href="#" class="text-white">Contact</a></li>
+                    <li><a href="#" class="text-white text-decoration-none">Home</a></li>
+                    <li><a href="#" class="text-white text-decoration-none">About</a></li>
+                    <li><a href="#" class="text-white text-decoration-none">Tech Journeys</a></li>
+                    <li><a href="#" class="text-white text-decoration-none">Contact</a></li>
                 </ul>
             </div>
 
-            <div class="col-lg-3 col-md-6">
-                <h5 class="text-white">Connect with Us</h5>
+            <!-- Connect with Us -->
+            <div class="col-lg-3 col-md-6 mb-4">
+                <h5 class="mb-3">Connect with Us</h5>
                 <ul class="list-unstyled">
-                    <li><a href="#" target="_blank" class="text-white">Twitter</a></li>
-                    <li><a href="#" target="_blank" class="text-white">LinkedIn</a></li>
-                    <li><a href="#" target="_blank" class="text-white">GitHub</a></li>
+                    <li><a href="#" target="_blank" class="text-white text-decoration-none"><i class="fab fa-facebook-f me-2"></i>Facebook</a></li>
+                    <li><a href="#" target="_blank" class="text-white text-decoration-none"><i class="fab fa-instagram me-2"></i>Instagram</a></li>
+                    <li><a href="#" target="_blank" class="text-white text-decoration-none"><i class="fab fa-github me-2"></i>GitHub</a></li>
                 </ul>
             </div>
 
-            <div class="col-lg-3 col-md-6">
-                <h5 class="text-white">Learning Resources</h5>
-                <ul class="list-unstyled">
-                    <li><a href="#" target="_blank" class="text-white">FreeCodeCamp</a></li>
-                    <li><a href="#" target="_blank" class="text-white">NetNinja</a></li>
-                    <li><a href="#" target="_blank" class="text-white">Web Dev Simplified</a></li>
-                </ul>
-            </div>
-
-            <div class="col-lg-3">
-                <h5 class="text-white">Copyright© by Trần Chí Hiếu 2024</h5>
-                <p class="text-white">All rights reserved.</p>
+            <!-- Copyright -->
+            <div class="col-lg-6 col-md-12 text-center">
+                <h5 class="mb-3">Copyright © by Trần Chí Hiếu 2024</h5>
+                <p class="mb-0" style="text-align: center">All rights reserved.</p>
             </div>
         </div>
     </div>
 </footer>
+
 <!-- Bootstrap core JS-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>

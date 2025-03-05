@@ -28,6 +28,7 @@ LANGUAGE_TYPE_CHOICES = [
     ('ptev', "PTE Academic"),
     ('dsh', "DSH"),
     ('nat-test', "NAT-TEST"),
+    ('others', "Others"),
 ]
 
 class RegisterForm(UserCreationForm):
@@ -40,7 +41,7 @@ class RegisterForm(UserCreationForm):
         widget=forms.PasswordInput(attrs={"class": "form-control", "placeholder": "Confirm password"}))
 
     # Thêm trường is_student và các trường bổ sung cho sinh viên
-    is_student = forms.BooleanField(required=False, label="Are you a student?", widget=forms.CheckboxInput())
+    is_student = forms.BooleanField(required=False, initial=False, label="Are you a student?", widget=forms.CheckboxInput())
     gpa = forms.DecimalField(
         max_digits=3, decimal_places=2, required=False,
         validators=[MinValueValidator(0.0), MaxValueValidator(4.0)],
@@ -79,9 +80,10 @@ class RegisterForm(UserCreationForm):
             if is_student:
                 if not cleaned_data.get("gpa"):
                     self.add_error("gpa", "GPA is required for students.")
-                if not cleaned_data.get("language_type"):
+                language_type = cleaned_data.get("language_type")
+                if not language_type:
                     self.add_error("language_type", "Language type is required for students.")
-                if not cleaned_data.get("language_score"):
+                if language_type != "others" and not cleaned_data.get("language_score"):
                     self.add_error("language_score", "Language score is required for students.")
                 if not cleaned_data.get("language_certificate"):
                     self.add_error("language_certificate", "Language certificate is required for students.")

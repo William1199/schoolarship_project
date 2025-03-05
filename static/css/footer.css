@@ -13,7 +13,7 @@ body {
 }
 
 footer {
-    background-color: #91785d; /* Màu nền của footer */
-    color: white; /* Màu chữ của footer */
-    padding: 20px 0; /* Khoảng cách trên và dưới */
+    background-color: #91785d !important; /* Màu nền của footer */
+    color: white !important; /* Màu chữ của footer */
+    padding: 20px 0 !important; /* Khoảng cách trên và dưới */
 }
